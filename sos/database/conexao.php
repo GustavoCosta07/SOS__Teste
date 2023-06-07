@@ -1,8 +1,8 @@
 <?php
-	$servidor = "localhost";
-	$usuario = "root";
-	$senha = "";
-	$dbname = "sos";
+	$servidor = "mysql";
+	$usuario = "myuser";
+	$senha = "mypassword";
+	$dbname = "sos_teste";
 	
 	
 	//Criar a conexao

@@ -31,7 +31,7 @@ error_reporting(0);
     
 <head>
 
-         <base href="https://grupofmv.app.br/sistema/" />
+         <base href="http://localhost:8080/" />
 
         <meta charset="utf-8" />
         <title>SOS DOS ELEVADORES</title>

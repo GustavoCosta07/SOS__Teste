@@ -1,8 +1,8 @@
 <?php
-	$servidor = "localhost";
-	$usuario = "grupofmvapp_sos";
-	$senha = "6eHC45fpYu5I";
-	$dbname = "grupofmvapp_sistema";
+	$servidor = "mysql";
+	$usuario = "myuser";
+	$senha = "mypassword";
+	$dbname = "sos_teste";
 	
 	
 	//Criar a conexao

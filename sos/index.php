@@ -31,7 +31,7 @@ error_reporting(0);
     
 <head>
 
-         <base href="http://localhost/sistema/sos/" />
+         <base href="http://localhost:8080/" />
 
         <meta charset="utf-8" />
         <title>SOS DOS ELEVADORES</title>
