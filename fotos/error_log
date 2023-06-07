@@ -1,0 +1,2 @@
+[02-Jun-2023 02:43:42 UTC] PHP Warning:  mysqli_query(): Couldn't fetch mysqli in /home/grupofmvapp/public_html/sistema/fotos/ajax.php on line 66
+[02-Jun-2023 02:43:42 UTC] PHP Warning:  mysqli_error(): Couldn't fetch mysqli in /home/grupofmvapp/public_html/sistema/fotos/ajax.php on line 67
