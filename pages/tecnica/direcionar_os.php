@@ -1,20 +1,33 @@
 <?php // CODIGO DA SESSION
 session_start();
 if (!empty($_SESSION['user_id'])) {
-    
 } else {
     $_SESSION['msg'] = "Área restrita";
     header("Location: ../../login.php");
 }
 global $resultadoConsulta;
-    $resultadoConsulta = minhaFuncao($queryService);
+global $resultadoConsultaTecnicos;
 
+$resultadoConsulta = minhaFuncao($queryService);
+$resultadoConsultaTecnicos = buscarUsers($queryService);
+
+function buscarUsers(QueryService $queryService)
+{
+    $tabelaUsers = "users";
+    $colunaUsers = "";
+    $condicoesUsers = "user_tipo = 2";
+
+    $resultado = $queryService->busca($tabelaUsers, $colunaUsers, $condicoesUsers);
+    $resultadoJson = json_encode($resultado);
+    echo "<script>console.log($resultadoJson);</script>";
+    return $resultadoJson;
+}
 function minhaFuncao(QueryService $queryService)
 {
-    $tabela = "os";
-    $colunas = ["os_status", "os_solicitante"];
-    // $condicoes = "coluna = 'valor'";
-    $resultado = $queryService->busca($tabela);
+    $tabelaOS = "os";
+    $colunasOS = ["os_status", "os_solicitante"];
+
+    $resultado = $queryService->busca($tabelaOS);
 
 
     $resultadoJson = json_encode($resultado);
@@ -131,9 +144,28 @@ function minhaFuncao(QueryService $queryService)
         margin-left: auto;
         margin-right: auto;
         border-radius: 10px;
-        overflow: hidden;
+        /* overflow: hidden; */
         margin-top: -15px;
     }
+
+    .table-container {
+        max-height: calc(8 * 50px);
+        /* Altura máxima para mostrar 8 linhas */
+        overflow-y: auto;
+        /* Habilita a rolagem vertical */
+    }
+
+    .thead-fixado {
+        position: sticky;
+        top: 0;
+        background-color: white;
+        z-index: 1;
+    }
+
+ 
+
+
+
 
     .rounded-table {
         border-collapse: separate;
@@ -238,81 +270,100 @@ function minhaFuncao(QueryService $queryService)
 <br>
 
 
-<table id="funcionarios" class="rounded-table">
-    <tr>
-        <th style="width: 200px; height: 50px;" colspan="12">02/06/2023</th>
-    </tr>
-
-    <tr>
-        <th style="width: 200px; height: 50px;">Técnicos</th>
-        <th style="border: 1px solid #ddd;">8</th>
-        <th style="border: 1px solid #ddd;">9</th>
-        <th style="border: 1px solid #ddd;">10</th>
-        <th style="border: 1px solid #ddd;">11</th>
-        <th style="border: 1px solid #ddd;">12</th>
-        <th style="border: 1px solid #ddd;">13</th>
-        <th style="border: 1px solid #ddd;">14</th>
-        <th style="border: 1px solid #ddd;">15</th>
-        <th style="border: 1px solid #ddd;">16</th>
-        <th style="border: 1px solid #ddd;">17</th>
-        <th style="border: 1px solid #ddd;">18</th>
-
-    </tr>
-    <tr>
-        <td style="text-align: left; display: flex; align-items: center; background-color: #0C1B38; color: white;"><img src="https://images.unsplash.com/photo-1595152452543-e5fc28ebc2b8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;">
-            <span style="margin-left: 10px;display: flex; align-items: center;">Técnico 1</span>
-        </td>
-        <td colspan="24" class="linha">
-
-        </td>
-    </tr>
-    <tr>
-        <td style="text-align: left; display: flex; align-items: center; background-color: #0C1B38; color: white;"><img src="https://images.unsplash.com/photo-1595152452543-e5fc28ebc2b8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;">
-            <span style="margin-left: 10px;display: flex; align-items: center;">Técnico 2</span>
-        </td>
-        <td colspan="24" class="linha"></td>
-    </tr>
-    <tr>
-        <td style="text-align: left; display: flex; align-items: center; background-color: #0C1B38; color: white;"><img src="https://images.unsplash.com/photo-1595152452543-e5fc28ebc2b8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;">
-            <span style="margin-left: 10px;display: flex; align-items: center;">Técnico 3</span>
-        </td>
-        <td colspan="24" class="linha"></td>
-    </tr>
-    <tr>
-        <td style="text-align: left;display: flex; align-items: center; background-color: #0C1B38; color: white;"><img src="https://images.unsplash.com/photo-1595152452543-e5fc28ebc2b8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;">
-            <span style="margin-left: 10px;display: flex; align-items: center;">Técnico 4</span>
-        </td>
-        <td colspan="24" class="linha"></td>
-    </tr>
-
-    <tr>
-        <td style="text-align: left; display: flex; align-items: center; background-color: #0C1B38; color: white;"><img src="https://images.unsplash.com/photo-1595152452543-e5fc28ebc2b8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;">
-            <span style="margin-left: 10px;display: flex; align-items: center;">Técnico 5</span>
-        </td>
-        <td colspan="24" class="linha"></td>
-    </tr>
-    <tr>
-        <td style="text-align: left; display: flex; align-items: center; background-color: #0C1B38; color: white;"><img src="https://images.unsplash.com/photo-1595152452543-e5fc28ebc2b8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;">
-            <span style="margin-left: 10px;display: flex; align-items: center;">Técnico 6</span>
-        </td>
-        <td colspan="24" class="linha"></td>
-    </tr>
-    <tr>
-        <td style="text-align: left; display: flex; align-items: center; background-color: #0C1B38; color: white; "><img src="https://images.unsplash.com/photo-1595152452543-e5fc28ebc2b8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;">
-            <span style="margin-left: 10px;display: flex; align-items: center;">Técnico 7</span>
-        </td>
-        <td colspan="24" class="linha"></td>
-    </tr>
-    <tr>
-        <td style="text-align: left; display: flex; align-items: center; background-color: #0C1B38; color: white;"><img src="https://images.unsplash.com/photo-1595152452543-e5fc28ebc2b8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;">
-            <span style="margin-left: 10px; display: flex; align-items: center;">Técnico 8</span>
-        </td>
-        <td colspan="24" class="linha"></td>
-    </tr>
-
-</table>
+<div class="table-container">
+    <table id="funcionarios" class="rounded-table">
+        <thead class="thead-fixado">
+            <tr>
+                <th style="width: 200px; height: 50px;" colspan="12">02/06/2023</th>
+            </tr>
+            <tr>
+                <th style="width: 200px; height: 50px;">Técnicos</th>
+                <th style="border: 1px solid #ddd;">8</th>
+                <th style="border: 1px solid #ddd;">9</th>
+                <th style="border: 1px solid #ddd;">10</th>
+                <th style="border: 1px solid #ddd;">11</th>
+                <th style="border: 1px solid #ddd;">12</th>
+                <th style="border: 1px solid #ddd;">13</th>
+                <th style="border: 1px solid #ddd;">14</th>
+                <th style="border: 1px solid #ddd;">15</th>
+                <th style="border: 1px solid #ddd;">16</th>
+                <th style="border: 1px solid #ddd;">17</th>
+                <th style="border: 1px solid #ddd;">18</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyFuncionarios">
+            <!-- As linhas dos técnicos serão adicionadas dinamicamente aqui -->
+        </tbody>
+    </table>
+</div>
 
 <script>
+    var resultadoConsultaTecnicos = <?php echo $resultadoConsultaTecnicos; ?>;
+
+    function montarTabelaTecnicos() {
+        var tbody = document.getElementById("tbodyFuncionarios");
+
+        // Limpar o conteúdo atual do tbody
+        tbody.innerHTML = "";
+
+        // Gerando as linhas da tabela com base nos técnicos
+        resultadoConsultaTecnicos.forEach(function(tecnico) {
+            // Criando uma nova linha
+            var novaLinha = document.createElement("tr");
+
+            // Criando a célula com o nome do técnico
+            var nomeCelula = document.createElement("td");
+            nomeCelula.style.textAlign = "left";
+            nomeCelula.style.display = "flex";
+            nomeCelula.style.alignItems = "center";
+            nomeCelula.style.backgroundColor = "#0C1B38";
+            nomeCelula.style.color = "white";
+            nomeCelula.style.border = "none"; // Removendo a borda
+
+            // Criando a imagem do técnico
+            var imagem = document.createElement("img");
+            imagem.src = "https://images.unsplash.com/photo-1595152452543-e5fc28ebc2b8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80";
+            imagem.style.width = "30px";
+            imagem.style.height = "30px";
+            imagem.style.objectFit = "cover";
+            imagem.style.borderRadius = "50%";
+
+            // Criando o span com o nome do técnico
+            var span = document.createElement("span");
+            span.style.marginLeft = "10px";
+            span.style.display = "flex";
+            span.style.alignItems = "center";
+            span.textContent = tecnico.user_nome;
+
+            // Adicionando a imagem e o span à célula
+            nomeCelula.appendChild(imagem);
+            nomeCelula.appendChild(span);
+
+            // Adicionando a célula com o nome do técnico à nova linha
+            novaLinha.appendChild(nomeCelula);
+
+            // Criando a célula vazia com colspan
+            var colspanCelula = document.createElement("td");
+            colspanCelula.colSpan = "11";
+            colspanCelula.classList.add("linha");
+
+            // Adicionando a célula vazia à nova linha
+            novaLinha.appendChild(colspanCelula);
+
+            // Adicionando a nova linha ao tbody
+            tbody.appendChild(novaLinha);
+        });
+    }
+
+    montarTabelaTecnicos();
+
+    var tabela = document.getElementById("funcionarios");
+    var thead = tabela.querySelector("thead");
+    thead.classList.add("thead-fixado");
+
+   
+
+
     // Recupere a string JSON do PHP
     var resultadoJson = <?php echo $resultadoConsulta; ?>;
     console.log('ola', resultadoJson)
@@ -321,8 +372,22 @@ function minhaFuncao(QueryService $queryService)
     var resultadoObj = (resultadoJson);
 
     // Exiba os valores desejados do objeto JavaScript
+    // var h1Element = document.getElementById("resultado");
+    // h1Element.innerHTML = "Valor do os_id: " + resultadoObj;
     var h1Element = document.getElementById("resultado");
-    h1Element.innerHTML = "Valor do os_id: " + resultadoObj;
+    h1Element.innerHTML = ""
+
+    // for (var i = 0; i < resultadoObj.length; i++) {
+    //     // Exibir todas as propriedades do objeto
+    //     var objeto = resultadoObj[i];
+    //     h1Element.innerHTML += i + ":<br>";
+
+    //     for (var prop in objeto) {
+    //         h1Element.innerHTML += prop + ": " + objeto[prop] + "<br>";
+    //     }
+
+    //     h1Element.innerHTML += "<br>";
+    // }
 
     function teste() {
         $('.divCarrossel').draggable({
@@ -361,7 +426,7 @@ function minhaFuncao(QueryService $queryService)
                 let totalHours = 18 - 8;
                 let adjustedStartTime = startTime - 8;
                 let adjustedEndTime = endTime - 8;
-                let textNode = document.createTextNode('Cliente');
+                let textNode = document.createTextNode(droppedItem.find('.tech-name').text());
                 let startPercentage = (adjustedStartTime / totalHours) * 100;
                 let endPercentage = (adjustedEndTime / totalHours) * 100;
                 let container = document.createElement('div');
@@ -397,249 +462,46 @@ function minhaFuncao(QueryService $queryService)
         var expandedContainer = $('<div class="expanded-container"></div>');
 
         expandedContainer.html(`
-      
-            <div class="botaoFecharContainer">
-    <div class="botaoWrapper">
-      <button type="button" onclick="minimizarContainer()" style="width: 10%; background-color: #6B1F34; border: 1px solid #9C273F;; cursor: pointer; color: #fff; height: 26px; border-radius: 10px;">Fechar</button>
-    </div>
-</div>
-                <div class="carousel">
-                                        <div id="os1" class="divCarrossel" data-start-time="8" data-end-time="12">
-                                            <div class="card-body">
-                            <div class="icon-section">
-                                <i class="fas fa-wrench"></i>
-                            </div>
-                            <div class="info-section">
-                                <p class="order-number">OS#1234</p>
-                                <p class="tech-name">João Silva</p>
-                                <p class="location">Minas Shopping</p>
-                            </div>
-                        </div>
-                        </div>
-                    <div id="os3" class="divCarrossel" data-start-time="10" data-end-time="11">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
+        <div class="botaoFecharContainer">
+            <div class="botaoWrapper">
+                <button type="button" onclick="minimizarContainer()" style="width: 10%; background-color: #6B1F34; border: 1px solid #9C273F;; cursor: pointer; color: #fff; height: 26px; border-radius: 10px;">Fechar</button>
             </div>
         </div>
-                        </div>
-
-                    <div id="os4" class="divCarrossel" data-start-time="13" data-end-time="14">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                    <div id="os1" class="divCarrossel" data-start-time="8" data-end-time="12">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                    <div id="os2" class="divCarrossel" data-start-time="15" data-end-time="17">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                    <div id="os3" class="divCarrossel" data-start-time="10" data-end-time="11">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                    <div id="os4" class="divCarrossel" data-start-time="13" data-end-time="14">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                    <div id="os1" class="divCarrossel" data-start-time="8" data-end-time="12">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                    <div id="os2" class="divCarrossel" data-start-time="15" data-end-time="17">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                    <div id="os3" class="divCarrossel" data-start-time="10" data-end-time="11">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                    <div id="os4" class="divCarrossel" data-start-time="13" data-end-time="14">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                    <div id="os1" class="divCarrossel" data-start-time="8" data-end-time="12">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                    <div id="os2" class="divCarrossel" data-start-time="15" data-end-time="17">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                    <div id="os3" class="divCarrossel" data-start-time="10" data-end-time="11">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                    <div id="os4" class="divCarrossel" data-start-time="13" data-end-time="14">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                    <div id="os1" class="divCarrossel" data-start-time="8" data-end-time="12">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                    <div id="os2" class="divCarrossel" data-start-time="15" data-end-time="17">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                    <div id="os3" class="divCarrossel" data-start-time="10" data-end-time="11">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                    <div id="os4" class="divCarrossel" data-start-time="13" data-end-time="14">
-                        <div class="card-body">
-            <div class="icon-section">
-                <i class="fas fa-wrench"></i>
-            </div>
-            <div class="info-section">
-                <p class="order-number">OS#1234</p>
-                <p class="tech-name">João Silva</p>
-                <p class="location">Minas Shopping</p>
-            </div>
-        </div>
-                        </div>
-                </div>
-            `);
+        <div class="carousel" id="divContainer"></div>
+    `);
 
         container.animate({
             height: "180px"
         }, 500, function() {
             container.replaceWith(expandedContainer);
+
+            var divContainer = document.getElementById("divContainer");
+
+            for (var i = 0; i < resultadoObj.length; i++) {
+                var objeto = resultadoObj[i];
+
+                var divOs = document.createElement("div");
+                divOs.id = "os" + (i + 1);
+                divOs.className = "divCarrossel";
+                divOs.setAttribute("data-start-time", "13");
+                divOs.setAttribute("data-end-time", "14");
+
+                var innerHTML = `
+                                    <div class="card-body">
+                                        <div class="icon-section">
+                                            <i class="fas fa-wrench"></i>
+                                        </div>
+                                        <div class="info-section">
+                                            <p class="order-number">OS#${objeto.os_id}</p>
+                                            <p class="tech-name">${objeto.os_cliente}</p>
+                                            <p class="location">${objeto.os_solicitante}</p>
+                                        </div>
+                                    </div>
+    `;
+
+                divOs.innerHTML = innerHTML;
+                divContainer.appendChild(divOs);
+            }
         });
 
         setTimeout(teste, 1000);
