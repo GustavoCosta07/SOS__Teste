@@ -1405,8 +1405,10 @@ $queryService = new queryService($conn);
             <div class="container-fluid">
 
                 <?php //
-                include "public/url.php";
+                // include "public/url.php";
+                // include('pages/tecnica/direcionar_os.php');
                 ?>
+                <iframe src="pages/tecnica/container.php" style="width:100%; height:500px;" frameborder="0"></iframe>
 
             </div>
             <!-- container-fluid -->
