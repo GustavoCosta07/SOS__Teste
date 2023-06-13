@@ -40,11 +40,6 @@ function minhaFuncao(QueryService $queryService)
     return $resultadoJson;
 }
 
-// minhaFuncao($queryService);
-
-
-
-
 ?>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
@@ -143,7 +138,6 @@ function minhaFuncao(QueryService $queryService)
         border-collapse: collapse;
         margin-left: auto;
         margin-right: auto;
-        border-radius: 10px;
         /* overflow: hidden; */
         margin-top: -15px;
     }
@@ -153,6 +147,7 @@ function minhaFuncao(QueryService $queryService)
         /* Altura máxima para mostrar 8 linhas */
         overflow-y: auto;
         /* Habilita a rolagem vertical */
+        border-radius: 10px;
     }
 
     .thead-fixado {
@@ -162,7 +157,12 @@ function minhaFuncao(QueryService $queryService)
         z-index: 1;
     }
 
- 
+    .espacamento {
+        height: 15px;
+    }
+
+
+
 
 
 
@@ -274,7 +274,7 @@ function minhaFuncao(QueryService $queryService)
     <table id="funcionarios" class="rounded-table">
         <thead class="thead-fixado">
             <tr>
-                <th style="width: 200px; height: 50px;" colspan="12">02/06/2023</th>
+                <th style="width: 200px; height: 50px;" id="dataCelula" colspan="12"></th>
             </tr>
             <tr>
                 <th style="width: 200px; height: 50px;">Técnicos</th>
@@ -298,6 +298,22 @@ function minhaFuncao(QueryService $queryService)
 </div>
 
 <script>
+    $(document).ready(function() {
+        retornarDataAtual()
+    });
+
+    function retornarDataAtual() {
+        var dataCelula = document.getElementById("dataCelula");
+
+        var dataAtual = new Date();
+
+        var dia = dataAtual.getDate();
+        var mes = dataAtual.getMonth() + 1;
+        var ano = dataAtual.getFullYear();
+        var dataFormatada = dia + "/" + mes + "/" + ano;
+
+        dataCelula.textContent = dataFormatada;
+    }
     var resultadoConsultaTecnicos = <?php echo $resultadoConsultaTecnicos; ?>;
 
     function montarTabelaTecnicos() {
@@ -305,6 +321,10 @@ function minhaFuncao(QueryService $queryService)
 
         // Limpar o conteúdo atual do tbody
         tbody.innerHTML = "";
+
+        var linhaEspacamento = document.createElement("tr");
+        linhaEspacamento.classList.add("espacamento");
+        tbody.appendChild(linhaEspacamento);
 
         // Gerando as linhas da tabela com base nos técnicos
         resultadoConsultaTecnicos.forEach(function(tecnico) {
@@ -361,7 +381,7 @@ function minhaFuncao(QueryService $queryService)
     var thead = tabela.querySelector("thead");
     thead.classList.add("thead-fixado");
 
-   
+
 
 
     // Recupere a string JSON do PHP
@@ -394,8 +414,6 @@ function minhaFuncao(QueryService $queryService)
             revert: "invalid",
             cursor: "move",
             helper: function() {
-                // var propriedade = $(this).html(droppedItem.attr('id'))
-                // console.log('gustavo', propriedade)
                 return $(this).clone().css({
                     'z-index': 1000,
                     'height': '20px' // diminui a altura ao arrastar
@@ -407,7 +425,7 @@ function minhaFuncao(QueryService $queryService)
             stop: function(event, ui) {
                 $(this).fadeTo(0, 1);
                 $(this).css('height',
-                    '95px'); // retorna a altura para 70px quando o arrasto termina
+                    '85px'); // retorna a altura para 70px quando o arrasto termina
             }
         });
 
