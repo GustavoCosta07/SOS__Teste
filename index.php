@@ -1,5 +1,10 @@
 <?php
+$direcionar = 'false';
 
+if (isset($_POST['direcionar'])) {
+    $direcionar = $_POST['direcionar'] === 'true';
+}
+echo "<script>console.log($direcionar);</script>";
 include "database/conexao.php";
 include "infra/queryService.php";
 session_start();
@@ -22,6 +27,21 @@ error_reporting(0);
 $queryService = new queryService($conn);
 ?>
 
+<!-- <script>
+    document.getElementById('direcionar').addEventListener('click', function(event) {
+        event.preventDefault();
+        console.log('ola mundo ')
+        fetch('index.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'direcionar=true'
+        }).then(function() {
+            location.reload();
+        });
+    });
+</script> -->
 
 
 
@@ -776,7 +796,10 @@ $queryService = new queryService($conn);
                             <a href="controle_os" class="nav-link" data-key="t-vertical">Listar OS</a>
                         </li>
                         <li class="nav-item">
-                            <a href="direcionar_os" class="nav-link" data-key="t-vertical">Direcionar OS</a>
+                            <a href="" id="direcionar" class="nav-link" data-key="t-vertical">Direcionar OS</a>
+
+
+
                         </li>
 
 
@@ -1407,8 +1430,21 @@ $queryService = new queryService($conn);
                 <?php //
                 // include "public/url.php";
                 // include('pages/tecnica/direcionar_os.php');
+
+                if ($direcionar == false) {
+                    include "public/url.php";
+                }
+
+                // if (isset($_GET['valor'])) {
+                //     $novoValor = $_GET['valor'];
+                //     $direcionar = ($novoValor === 'true');
+                // }
+                if ($direcionar == true) {
+                    echo "<script>console.log('oigustavo');</script>";
+                    echo '<iframe src="pages/tecnica/direcionar_os.php" style="width: 100%; height: 500px;"></iframe>';
+                }
                 ?>
-                <iframe src="pages/tecnica/container.php" style="width:100%; height:500px;" frameborder="0"></iframe>
+                <!-- <iframe src="pages/tecnica/container.php" style="width:100%; height:500px;" frameborder="0"></iframe> -->
 
             </div>
             <!-- container-fluid -->
@@ -1421,6 +1457,19 @@ $queryService = new queryService($conn);
                     <div class="col-sm-6">
                         <script>
                             document.write(new Date().getFullYear())
+
+                            document.getElementById('direcionar').addEventListener('click', function(event) {
+                                event.preventDefault();
+                                fetch('index.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded'
+                                    },
+                                    body: 'direcionar=true'
+                                }).then(function() {
+                                    location.reload();
+                                });
+                            });
                         </script> © SOS Dos Elevadores.
                     </div>
                     <div class="col-sm-6">

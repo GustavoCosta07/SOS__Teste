@@ -5,6 +5,9 @@ if (!empty($_SESSION['user_id'])) {
     $_SESSION['msg'] = "Área restrita";
     header("Location: ../../login.php");
 }
+include "../../database/conexao.php";
+include "../../infra/queryService.php";
+$queryService = new queryService($conn);
 global $resultadoConsulta;
 global $resultadoConsultaTecnicos;
 
@@ -48,7 +51,16 @@ function minhaFuncao(QueryService $queryService)
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
 <style>
-    .containerr {
+    @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins';
+    }
+
+    .container {
         width: 100%;
         margin: 0 auto;
         background-color: #0C1B38;
@@ -161,6 +173,9 @@ function minhaFuncao(QueryService $queryService)
         height: 15px;
     }
 
+    table th.hour {
+        width: 50px;
+    }
 
 
 
@@ -258,7 +273,7 @@ function minhaFuncao(QueryService $queryService)
 
 
 
-<div class="containerr">
+<div class="container">
     <button style="width: 10%;
          background-color: #6B1F34;
           border: 1px solid #9C273F;
@@ -271,24 +286,24 @@ function minhaFuncao(QueryService $queryService)
 
 
 <div class="table-container">
-    <table id="funcionarios" class="rounded-table">
+    <table id="funcionarios" class="rounded-table table">
         <thead class="thead-fixado">
             <tr>
                 <th style="width: 200px; height: 50px;" id="dataCelula" colspan="12"></th>
             </tr>
             <tr>
-                <th style="width: 200px; height: 50px;">Técnicos</th>
-                <th style="border: 1px solid #ddd;">8</th>
-                <th style="border: 1px solid #ddd;">9</th>
-                <th style="border: 1px solid #ddd;">10</th>
-                <th style="border: 1px solid #ddd;">11</th>
-                <th style="border: 1px solid #ddd;">12</th>
-                <th style="border: 1px solid #ddd;">13</th>
-                <th style="border: 1px solid #ddd;">14</th>
-                <th style="border: 1px solid #ddd;">15</th>
-                <th style="border: 1px solid #ddd;">16</th>
-                <th style="border: 1px solid #ddd;">17</th>
-                <th style="border: 1px solid #ddd;">18</th>
+                <th style="width: 100px; height: 50px;">Técnicos</th>
+                <th style="border: 1px solid #ddd;" class="hour">8</th>
+                <th style="border: 1px solid #ddd;" class="hour">9</th>
+                <th style="border: 1px solid #ddd;" class="hour">10</th>
+                <th style="border: 1px solid #ddd;" class="hour">11</th>
+                <th style="border: 1px solid #ddd;" class="hour">12</th>
+                <th style="border: 1px solid #ddd;" class="hour">13</th>
+                <th style="border: 1px solid #ddd;" class="hour">14</th>
+                <th style="border: 1px solid #ddd;" class="hour">15</th>
+                <th style="border: 1px solid #ddd;" class="hour">16</th>
+                <th style="border: 1px solid #ddd;" class="hour">17</th>
+                <th style="border: 1px solid #ddd;" class="hour">18</th>
             </tr>
         </thead>
         <tbody id="tbodyFuncionarios">
@@ -308,12 +323,13 @@ function minhaFuncao(QueryService $queryService)
         var dataAtual = new Date();
 
         var dia = dataAtual.getDate();
-        var mes = dataAtual.getMonth() + 1;
+        var mes = (dataAtual.getMonth() + 1).toString().padStart(2, '0'); // Adiciona um zero na frente se for um mês de 1 a 9
         var ano = dataAtual.getFullYear();
         var dataFormatada = dia + "/" + mes + "/" + ano;
 
         dataCelula.textContent = dataFormatada;
     }
+
     var resultadoConsultaTecnicos = <?php echo $resultadoConsultaTecnicos; ?>;
 
     function montarTabelaTecnicos() {
@@ -342,7 +358,7 @@ function minhaFuncao(QueryService $queryService)
 
             // Criando a imagem do técnico
             var imagem = document.createElement("img");
-            imagem.src = "https://images.unsplash.com/photo-1595152452543-e5fc28ebc2b8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80";
+            imagem.src = "https://s3.amazonaws.com/attachments.fieldcontrol.com.br/accounts/6118/employees/9271b714-c5cb-4f75-bdd0-abc71276dfd0/518e.83c14040f.png?id=85ae.81f15e935";
             imagem.style.width = "30px";
             imagem.style.height = "30px";
             imagem.style.objectFit = "cover";
@@ -351,6 +367,7 @@ function minhaFuncao(QueryService $queryService)
             // Criando o span com o nome do técnico
             var span = document.createElement("span");
             span.style.marginLeft = "10px";
+            span.style.fontSize = "13px"
             span.style.display = "flex";
             span.style.alignItems = "center";
             span.textContent = tecnico.user_nome;
@@ -439,44 +456,89 @@ function minhaFuncao(QueryService $queryService)
             },
             drop: function(event, ui) {
                 let droppedItem = ui.draggable;
-                let startTime = parseInt(droppedItem.attr('data-start-time'));
-                let endTime = parseInt(droppedItem.attr('data-end-time'));
-                let totalHours = 18 - 8;
-                let adjustedStartTime = startTime - 8;
-                let adjustedEndTime = endTime - 8;
+
+                var table = document.querySelector('table'); // Selecione a tabela
+                var cells = table.querySelectorAll('th.hour');
+                var cellWidth = cells[1].offsetWidth; // Obtenha a largura de uma célula
+
+                var rect = this.getBoundingClientRect(); // Obtenha a posição do elemento receptor na página
+                console.log('Elemento receptor:', rect.left, rect.top); // Exiba a posição do elemento receptor no console
+                console.log('Cursor:', event.clientX, event.clientY); // Exiba a posição do cursor no console
+                var x = event.clientX - rect.left; // Calcule a posição do mouse em relação ao elemento receptor
+                var cellIndex = Math.floor(x / cellWidth); // Calcule o índice da célula em que o mouse foi solto
+                var time = parseInt(cells[cellIndex].textContent); // Obtenha a hora correspondente à célula
+                console.log(time); // Exiba a hora no console
+
                 let textNode = document.createTextNode(droppedItem.find('.tech-name').text());
-                let startPercentage = (adjustedStartTime / totalHours) * 100;
-                let endPercentage = (adjustedEndTime / totalHours) * 100;
                 let container = document.createElement('div');
                 container.style.margin = '0 auto';
-                container.style.backgroundColor = '#0C1B38';
-                container.style.width = endPercentage - startPercentage + '%';
-
+                container.style.backgroundColor = 'red';
                 container.style.height = '30px';
-                container.style.borderRadius = '10px';
+                // container.style.borderRadius = '10px';
                 container.style.boxShadow = '0px 4px 8px rgba(145, 144, 144, 0.2)';
                 container.style.position = 'absolute';
-                container.style.left = startPercentage + '%';
                 container.style.top = '50%';
                 container.style.transform = 'translateY(-50%)';
                 container.style.color = 'white';
                 container.style.textAlign = 'center';
                 container.style.justifyContent = 'center';
-                // container.style.display = 'flex';
+                container.style.width = (cellWidth * 4) + 'px'; // Defina a largura do elemento arrastado como o dobro da largura da célula
+                container.style.left = (cellIndex * cellWidth) + 'px'; // Defina a posição do elemento arrastado como a posição da célula
                 $(this).css('position', 'relative');
                 $(this).empty();
                 container.appendChild(textNode);
                 $(this).append(container);
-                // $(this).html(droppedItem.attr('id'));
                 $(this).removeClass('hoverHighlight');
             }
         });
     };
 
+    // $('.linha').droppable({
+    //         accept: ".divCarrossel",
+    //         over: function(event, ui) {
+    //             $(this).addClass('hoverHighlight');
+    //         },
+    //         out: function(event, ui) {
+    //             $(this).removeClass('hoverHighlight');
+    //         },
+    //         drop: function(event, ui) {
+    //             let droppedItem = ui.draggable;
+
+    //             var table = document.querySelector('table'); // Selecione a tabela
+    //             var cells = table.querySelectorAll('th.hour');
+    //             var cellWidth = cells[1].offsetWidth; // Obtenha a largura de uma célula
+
+    //             var rect = this.getBoundingClientRect(); // Obtenha a posição do elemento receptor na página
+    //             var x = event.clientX - rect.left; // Calcule a posição do mouse em relação ao elemento receptor
+    //             var cellIndex = Math.floor(x / cellWidth); // Calcule o índice da célula em que o mouse foi solto
+    //             var time = parseInt(cells[cellIndex].textContent); // Obtenha a hora correspondente à célula
+    //             console.log(time); // Exiba a hora no console
+
+    //             let textNode = document.createTextNode(droppedItem.find('.tech-name').text());
+    //             let container = document.createElement('div');
+    //             container.style.margin = '0 auto';
+    //             container.style.backgroundColor = '#0C1B38';
+    //             container.style.height = '30px';
+    //             container.style.borderRadius = '10px';
+    //             container.style.boxShadow = '0px 4px 8px rgba(145, 144, 144, 0.2)';
+    //             container.style.position = 'absolute';
+    //             container.style.top = '50%';
+    //             container.style.transform = 'translateY(-50%)';
+    //             container.style.color = 'white';
+    //             container.style.textAlign = 'center';
+    //             container.style.justifyContent = 'center';
+    //             $(this).css('position', 'relative');
+    //             $(this).empty();
+    //             container.appendChild(textNode);
+    //             $(this).append(container);
+    //             $(this).removeClass('hoverHighlight');
+    //         }
+    //     });
+
 
 
     function mostraContainer() {
-        var container = $('.containerr');
+        var container = $('.container');
         var expandedContainer = $('<div class="expanded-container"></div>');
 
         expandedContainer.html(`
@@ -529,7 +591,7 @@ function minhaFuncao(QueryService $queryService)
 
     function minimizarContainer() {
         var container = $('.expanded-container');
-        var minimizedContainer = $('<div class="containerr"></div>');
+        var minimizedContainer = $('<div class="container"></div>');
 
         minimizedContainer.html(`
                         <button style="width: 10%;
