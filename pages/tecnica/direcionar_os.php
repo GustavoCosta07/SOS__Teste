@@ -50,6 +50,10 @@ function minhaFuncao(QueryService $queryService)
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
+
+
+
+
 <style>
     @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
@@ -155,7 +159,7 @@ function minhaFuncao(QueryService $queryService)
     }
 
     .table-container {
-        max-height: calc(8 * 50px);
+        max-height: calc(11 * 50px);
         /* Altura máxima para mostrar 8 linhas */
         overflow-y: auto;
         /* Habilita a rolagem vertical */
@@ -283,6 +287,10 @@ function minhaFuncao(QueryService $queryService)
               border-radius: 10px;" type="button" onclick="mostraContainer()">Exibir O.S</button>
 </div>
 <br>
+
+<!-- <div id="meuModal" title="Título do Modal">
+    <p>Conteúdo do modal</p>
+</div> -->
 
 
 <div class="table-container">
@@ -472,7 +480,7 @@ function minhaFuncao(QueryService $queryService)
                 let textNode = document.createTextNode(droppedItem.find('.tech-name').text());
                 let container = document.createElement('div');
                 container.style.margin = '0 auto';
-                container.style.backgroundColor = 'red';
+                container.style.backgroundColor = '#89CFF0';
                 container.style.height = '30px';
                 // container.style.borderRadius = '10px';
                 container.style.boxShadow = '0px 4px 8px rgba(145, 144, 144, 0.2)';
@@ -482,10 +490,25 @@ function minhaFuncao(QueryService $queryService)
                 container.style.color = 'white';
                 container.style.textAlign = 'center';
                 container.style.justifyContent = 'center';
-                container.style.width = (cellWidth * 4) + 'px'; // Defina a largura do elemento arrastado como o dobro da largura da célula
+
+                // Gere um número aleatório entre 1 e 4
+                var numHoras = Math.floor(Math.random() * 4) + 1;
+
+                // Defina a largura do elemento arrastado com base no número de horas gerado aleatoriamente
+                container.style.width = (cellWidth * numHoras) + 'px';
+
+                // Verifique se já existe um elemento na célula
+                var existingElement = this.querySelector('div');
+
+                if (existingElement) {
+                    console.log('opa')
+     
+                }
+
+
                 container.style.left = (cellIndex * cellWidth) + 'px'; // Defina a posição do elemento arrastado como a posição da célula
                 $(this).css('position', 'relative');
-                $(this).empty();
+
                 container.appendChild(textNode);
                 $(this).append(container);
                 $(this).removeClass('hoverHighlight');

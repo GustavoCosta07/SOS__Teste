@@ -7,6 +7,7 @@ if (isset($_POST['direcionar'])) {
 echo "<script>console.log($direcionar);</script>";
 include "database/conexao.php";
 include "infra/queryService.php";
+// include "ui-modals.html";
 session_start();
 if (!empty($_SESSION['user_id'])) {
 } else {
@@ -796,7 +797,7 @@ $queryService = new queryService($conn);
                             <a href="controle_os" class="nav-link" data-key="t-vertical">Listar OS</a>
                         </li>
                         <li class="nav-item">
-                            <a href="" id="direcionar" class="nav-link" data-key="t-vertical">Direcionar OS</a>
+                            <a href="direcionar_os2" class="nav-link" data-key="t-vertical">Direcionar OS</a>
 
 
 
@@ -1429,20 +1430,21 @@ $queryService = new queryService($conn);
 
                 <?php //
                 // include "public/url.php";
+                echo '<iframe src="pages/tecnica/direcionar_os2.php" style="width: 100%; height: 100vh;"></iframe>';
                 // include('pages/tecnica/direcionar_os.php');
 
-                if ($direcionar == false) {
-                    include "public/url.php";
-                }
+                // if ($direcionar == false) {
+                //     include "public/url.php";
+                // }
 
                 // if (isset($_GET['valor'])) {
                 //     $novoValor = $_GET['valor'];
                 //     $direcionar = ($novoValor === 'true');
                 // }
-                if ($direcionar == true) {
-                    echo "<script>console.log('oigustavo');</script>";
-                    echo '<iframe src="pages/tecnica/direcionar_os.php" style="width: 100%; height: 500px;"></iframe>';
-                }
+                // if ($direcionar == true) {
+                //     echo "<script>console.log('oigustavo');</script>";
+                //     echo '<iframe src="pages/tecnica/direcionar_os.php" style="width: 100%; height: 100vh;"></iframe>';
+                // }
                 ?>
                 <!-- <iframe src="pages/tecnica/container.php" style="width:100%; height:500px;" frameborder="0"></iframe> -->
 
