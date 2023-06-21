@@ -9,7 +9,6 @@ function buscarUsers(QueryService $queryService)
     $tabelaUsers = "users";
     $colunaUsers = "";
     $condicoesUsers = "user_tipo = 2";
-
     $resultado = $queryService->busca($tabelaUsers, $colunaUsers, $condicoesUsers);
     $resultadoJson = json_encode($resultado);
     echo "<script>console.log($resultadoJson);</script>";
@@ -25,13 +24,13 @@ function buscarUsers(QueryService $queryService)
     <title>jQuery.skedTape</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <link rel=" stylesheet" href="./jquery.skedTape.css">
+    <link rel=" stylesheet" href="jquery.skedTape.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/solid.css" integrity="sha384-wnAC7ln+XN0UKdcPvJvtqIH3jOjs9pnKnq9qX68ImXvOGz2JuFoEiCjT8jyZQX2z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css" integrity="sha384-HbmWTHay9psM8qyzEKPc8odH4DsOuzdejtnr+OFtDmOcIVnhgReQ4GZBH7uwcjf6" crossorigin="anonymous">
-    <script src="./jquery.skedTape.js"></script>
+    <script src="jquery.skedTape.js"></script>
 
 
 
@@ -40,7 +39,7 @@ function buscarUsers(QueryService $queryService)
             width: 100%;
             margin: 0 auto;
             background-color: #0C1B38;
-            height: 180px;
+            height: 140px;
             border-radius: 10px;
             overflow-x: auto;
             white-space: nowrap;
@@ -88,27 +87,6 @@ function buscarUsers(QueryService $queryService)
         }
 
 
-
-        .expanded-container::-webkit-scrollbar {
-            width: 12px;
-        }
-
-        .expanded-container::-webkit-scrollbar-track {
-            background-color: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .expanded-container::-webkit-scrollbar-thumb {
-            background-color: #bebebe;
-            border-radius: 10px;
-        }
-
-        .expanded-container::-webkit-scrollbar-thumb:hover {
-            background-color: #919191;
-        }
-
-
-
         .highlight-card {
             filter: brightness(200%);
             /* Aumenta o brilho em 20% */
@@ -134,9 +112,7 @@ function buscarUsers(QueryService $queryService)
 
         .timeline-container {
             max-height: 350px;
-            /* Ajuste esta altura para o valor que desejar. Esse valor determinará quantas linhas você verá de uma vez */
             overflow-y: auto;
-            /* Isso permite que a barra de rolagem apareça quando o conteúdo ultrapassar a altura máxima */
         }
 
         .icone {
@@ -146,15 +122,24 @@ function buscarUsers(QueryService $queryService)
             border-radius: 50%;
         }
 
+        .deslocamento {
 
-
-        .current-time-line {
+            background-color: #0446c2;
+            transition: 200ms background-color;
+            top: 1px;
+            bottom: 0;
+            display: block;
             position: absolute;
-            top: 0;
-            height: 100%;
-            width: 1px;
-            background-color: red;
-            border-left: 1px dashed #000;
+            z-index: 3;
+            white-space: nowrap;
+            overflow: hidden;
+            font-size: 12px;
+            color: white;
+            border: 1px solid #0446c2;
+            min-width: 10px;
+            cursor: default;
+            line-height: 16px;
+
         }
     </style>
 
@@ -191,75 +176,12 @@ function buscarUsers(QueryService $queryService)
                 </div>
             </div>
 
-            <div id="os4" class="divCarrossel" data-start-time="13" data-end-time="14">
-                <div class="card-body">
-                    <div class="icon-section">
-                        <i class="fas fa-wrench"></i>
-                    </div>
-                    <div class="info-section">
-                        <p class="order-number">OS#1234</p>
-                        <p class="tech-name">João Silva</p>
-                        <p class="location">Minas Shopping</p>
-                    </div>
-                </div>
-            </div>
 
-            <div id="os4" class="divCarrossel" data-start-time="13" data-end-time="14">
-                <div class="card-body">
-                    <div class="icon-section">
-                        <i class="fas fa-wrench"></i>
-                    </div>
-                    <div class="info-section">
-                        <p class="order-number">OS#1234</p>
-                        <p class="tech-name">João Silva</p>
-                        <p class="location">Minas Shopping</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="os4" class="divCarrossel" data-start-time="13" data-end-time="14">
-                <div class="card-body">
-                    <div class="icon-section">
-                        <i class="fas fa-wrench"></i>
-                    </div>
-                    <div class="info-section">
-                        <p class="order-number">OS#1234</p>
-                        <p class="tech-name">João Silva</p>
-                        <p class="location">Minas Shopping</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="os4" class="divCarrossel" data-start-time="13" data-end-time="14">
-                <div class="card-body">
-                    <div class="icon-section">
-                        <i class="fas fa-wrench"></i>
-                    </div>
-                    <div class="info-section">
-                        <p class="order-number">OS#1234</p>
-                        <p class="tech-name">João Silva</p>
-                        <p class="location">Minas Shopping</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="os4" class="divCarrossel" data-start-time="13" data-end-time="14">
-                <div class="card-body">
-                    <div class="icon-section">
-                        <i class="fas fa-wrench"></i>
-                    </div>
-                    <div class="info-section">
-                        <p class="order-number">OS#1234</p>
-                        <p class="tech-name">João Silva</p>
-                        <p class="location">Minas Shopping</p>
-                    </div>
-                </div>
-            </div>
         </div>
 
     </div>
 
-
+    <br>
     <div class="container mt-4 timeline-container">
 
         <div class="mb-4">
@@ -273,7 +195,9 @@ function buscarUsers(QueryService $queryService)
     <script type="text/javascript">
         var el = document.getElementById('carousel');
         var selectedId = null;
-
+        // var skedTapeEvents = [];
+        // var now = new Date();
+        // now.setSeconds(0, 0);
         // // Adicionando listener de eventos aos elementos do carrossel.
         el.addEventListener('click', function(event) {
             // Suponho que o ID do elemento está armazenado no atributo data-id.
@@ -285,27 +209,15 @@ function buscarUsers(QueryService $queryService)
         console.log('ola', resultadoConsultaTecnicos)
 
 
-        var locations = resultadoConsultaTecnicos.map(function(dado) {
+        var locations2 = resultadoConsultaTecnicos.map(function(dado, index) {
             return {
-                id: dado.user_id,
+                id: index + 1,
+                idTecnico: dado.user_id,
                 name: dado.user_nome
             };
         });
 
-        console.log('locations', locations)
 
-        // var locations = [
-        //     { id: '1', name: 'San Francisco' },
-        //     { id: '2', name: 'Sydney' },
-        //     { id: '3', name: 'New York' },
-        //     { id: 'london', name: 'London' },
-        //     { id: '5', name: 'Copenhagen' },
-        //     { id: '6', name: 'Berlin', },
-        //     { id: '7', name: 'manchaster' },
-            
-
-
-        // ];
         var events = [
             //   os ja direcionadas entrarão nestas variaveus com estes parametros
             // mudar o parametro location para tecnicos
@@ -314,10 +226,44 @@ function buscarUsers(QueryService $queryService)
                 name: 'Meeting 2 (ovelapping)',
                 location: '5',
                 start: today(8, 30),
-                end: today(9, 15)
+                end: today(16, 55),
+                started: false,
+                type: ''
             },
+            {
+                name: 'Meeting 2 (ovelapping)',
+                location: '4',
+                start: today(8, 30),
+                end: today(15, 40),
+                started: true,
+                type: ''
+            },
+            {
+                name: 'Meeting 2 (ovelapping)',
+                location: '4',
+                start: today(15, 40),
+                end: today(17, 40),
+                started: true,
+                type: 'deslocamento'
+            }
 
         ];
+        console.log('ola gustyav inicio', events)
+        events.forEach(function(event) {
+            if (compareCurrentTime(event.start) == 1 && event.started == false) {
+                event.start = getCurrentTime()
+                console.log('ola gustyav', events)
+            }
+            if (event.type === 'deslocamento') {
+                event.element.addClass('deslocamento'); //isto não funciona, tem que pesquisar como adiciona classe
+            }
+
+        });
+
+        function getCurrentTime() {
+            var currentDate = new Date();
+            return currentDate;
+        }
 
         function today(hours, minutes) {
             var date = new Date();
@@ -337,6 +283,18 @@ function buscarUsers(QueryService $queryService)
             return date;
         }
 
+        function compareCurrentTime(timeString) {
+            var currentTime = new Date();
+            var comparisonTime = new Date(timeString);
+            if (currentTime > comparisonTime) {
+                return 1;
+            } else if (currentTime < comparisonTime) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+
         var $sked1 = $('#sked1').skedTape({
             caption: 'Técnicos',
             start: today(8, 0),
@@ -344,7 +302,7 @@ function buscarUsers(QueryService $queryService)
             showEventTime: true,
             showEventDuration: true,
             scrollWithYWheel: true,
-            locations: locations.slice(),
+            locations: locations2.slice(),
             events: events.slice(),
             maxTimeGapHi: 60 * 1000, // 1 minute
             minGapTimeBetween: 1 * 60 * 1000,
@@ -363,16 +321,20 @@ function buscarUsers(QueryService $queryService)
                     });
                 },
             },
-            // canAddIntoLocation: function (location, event) {
-            //     return location.id !== 'london';
-            // },
+
             postRenderLocation: function($el, location, canAdd) {
                 this.constructor.prototype.postRenderLocation($el, location, canAdd);
                 $el.prepend('<img src="https://s3.amazonaws.com/attachments.fieldcontrol.com.br/accounts/6118/employees/9271b714-c5cb-4f75-bdd0-abc71276dfd0/518e.83c14040f.png?id=1bf9.cb7bee33a" alt="Imagem" class="icone"/>');
             }
         });
         $sked1.on('event:dragEnded.skedtape', function(e) {
-            console.log(e.detail.event);
+            var event = e.detail.event;
+            var startTime = event.start;
+            var currentTime = new Date();
+            if (startTime < currentTime) {
+                event.start = currentTime;
+                $sked1.skedTape('updateEvent', event);
+            }
         });
         $sked1.on('event:click.skedtape', function(e) {
             $sked1.skedTape('removeEvent', e.detail.event.id);
@@ -380,51 +342,25 @@ function buscarUsers(QueryService $queryService)
         $sked1.on('timeline:click.skedtape', function(e, api) {
             try {
                 if (selectedId) {
+                    var startTime = e.detail.time;
+                    var currentTime = new Date();
+                    if (startTime < currentTime) {
+                        startTime = currentTime;
+                    }
                     $sked1.skedTape('startAdding', {
                         name: 'New meeting' + selectedId,
-                        id: selectedId, // Use o ID armazenado aqui.
-                        duration: 60 * 90 * 1000
+                        id: selectedId,
+                        start: startTime,
+                        duration: 60 * 90 * 1000,
+                        started: false
                     });
-                    selectedId = null; // Resetar o ID armazenado.
+                    selectedId = null;
                 }
             } catch (e) {
                 if (e.name !== 'SkedTape.CollisionError') throw e;
                 alert('Already exists');
             }
         });
-
-
-
-        // // Cria uma nova linha na tabela que representa a hora atual
-        // function createCurrentTimeLine() {
-        //     const currentTimeLine = document.createElement('div');
-        //     currentTimeLine.classList.add('current-time-line');
-        //     document.getElementById('sked1').appendChild(currentTimeLine);
-        //     return currentTimeLine;
-        // }
-
-        // // Atualiza a posição da linha de tempo de acordo com a hora atual
-        // function updateCurrentTimeLine(currentTimeLine) {
-        //     const scheduleStartTime = 8;  // Início do cronograma em horas
-        //     const scheduleEndTime = 24;  // Fim do cronograma em horas
-        //     const scheduleDuration = scheduleEndTime - scheduleStartTime;
-
-        //     const now = new Date();
-        //     const nowInHours = now.getHours() + now.getMinutes() / 60;
-        //     const elapsedHours = nowInHours - scheduleStartTime;
-        //     const elapsedPercentage = elapsedHours / scheduleDuration;
-
-        //     currentTimeLine.style.left = `calc(${elapsedPercentage * 100}% - 1px)`;
-        // }
-
-        // // Inicia a linha de tempo
-        // const currentTimeLine = createCurrentTimeLine();
-        // updateCurrentTimeLine(currentTimeLine);
-
-        // // Atualiza a linha de tempo a cada minuto
-        // setInterval(() => {
-        //     updateCurrentTimeLine(currentTimeLine);
-        // }, 60000);
     </script>
 </body>
 
