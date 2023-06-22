@@ -11,7 +11,7 @@ function buscarUsers(QueryService $queryService)
     $condicoesUsers = "user_tipo = 2";
     $resultado = $queryService->busca($tabelaUsers, $colunaUsers, $condicoesUsers);
     $resultadoJson = json_encode($resultado);
-    echo "<script>console.log($resultadoJson);</script>";
+    // echo "<script>console.log($resultadoJson);</script>";
     return $resultadoJson;
 }
 ?>
@@ -31,6 +31,7 @@ function buscarUsers(QueryService $queryService)
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/solid.css" integrity="sha384-wnAC7ln+XN0UKdcPvJvtqIH3jOjs9pnKnq9qX68ImXvOGz2JuFoEiCjT8jyZQX2z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css" integrity="sha384-HbmWTHay9psM8qyzEKPc8odH4DsOuzdejtnr+OFtDmOcIVnhgReQ4GZBH7uwcjf6" crossorigin="anonymous">
     <script src="jquery.skedTape.js"></script>
+    <link rel=" stylesheet" href="jquery.skedTape copy.css">
 
 
 
@@ -111,7 +112,7 @@ function buscarUsers(QueryService $queryService)
         }
 
         .timeline-container {
-            max-height: 350px;
+            max-height: 500px;
             overflow-y: auto;
         }
 
@@ -141,6 +142,24 @@ function buscarUsers(QueryService $queryService)
             line-height: 16px;
 
         }
+
+        .deslocamento-event {
+            background-color: blue;
+            height: 30px;
+        }
+
+        .deslocamento-event:hover {
+            background-color: black;
+        }
+
+        .atendimento-event {
+            background-color: yellow;
+        }
+
+        .servico {
+            background-color: #FF1493;
+        }
+      
     </style>
 
 </head>
@@ -182,14 +201,17 @@ function buscarUsers(QueryService $queryService)
     </div>
 
     <br>
-    <div class="container mt-4 timeline-container">
+    <div class="teste">
 
-        <div class="mb-4">
-
-            <div class="mb-2" id="sked1"></div>
-
+        <div class="container mt-4 timeline-container">
+    
+            <div class="mb-4">
+    
+                <div class="mb-2" id="sked1"></div>
+    
+            </div>
+    
         </div>
-
     </div>
 
     <script type="text/javascript">
@@ -227,25 +249,63 @@ function buscarUsers(QueryService $queryService)
                 location: '5',
                 start: today(8, 30),
                 end: today(16, 55),
+                // className: 'deslocamento-event',
                 started: false,
                 type: ''
             },
             {
                 name: 'Meeting 2 (ovelapping)',
                 location: '4',
-                start: today(8, 30),
-                end: today(15, 40),
+                start: today(8, 0),
+                end: today(10, 0),
                 started: true,
                 type: ''
             },
             {
                 name: 'Meeting 2 (ovelapping)',
                 location: '4',
-                start: today(15, 40),
-                end: today(17, 40),
+                start: today(10, 01),
+                end: today(12, 0),
                 started: true,
                 type: 'deslocamento'
+            },
+            {
+                name: 'Meeting 2 (ovelapping)',
+                location: '4',
+                start: today(12, 01),
+                end: today(13, 0),
+                started: true,
+                type: 'deslocamento',
+                className: 'deslocamento-event'
+            },
+            {
+                name: 'Meeting 2 (ovelapping)',
+                location: '4',
+                start: today(13, 01),
+                end: today(15, 0),
+                started: true,
+                type: 'deslocamento',
+                className: 'atendimento-event'
+            },
+            {
+                name: 'Meeting 2 (ovelapping)',
+                location: '4',
+                start: today(13, 01),
+                end: today(15, 0),
+                started: true,
+                type: 'deslocamento',
+                className: 'atendimento-event'
+            },
+            {
+                name: 'Meeting 2 (ovelapping)',
+                location: '4',
+                start: today(15, 01),
+                end: today(18, 0),
+                started: true,
+                type: 'deslocamento',
+                className: 'servico'
             }
+            
 
         ];
         console.log('ola gustyav inicio', events)
@@ -254,9 +314,9 @@ function buscarUsers(QueryService $queryService)
                 event.start = getCurrentTime()
                 console.log('ola gustyav', events)
             }
-            if (event.type === 'deslocamento') {
-                event.element.addClass('deslocamento'); //isto não funciona, tem que pesquisar como adiciona classe
-            }
+            // if (event.type === 'deslocamento') {
+            //     event.element.addClass('deslocamento'); //isto não funciona, tem que pesquisar como adiciona classe
+            // }
 
         });
 
@@ -351,8 +411,10 @@ function buscarUsers(QueryService $queryService)
                         name: 'New meeting' + selectedId,
                         id: selectedId,
                         start: startTime,
+                        // active: true,
                         duration: 60 * 90 * 1000,
-                        started: false
+                        started: false,
+                        className: 'deslocamento-event'
                     });
                     selectedId = null;
                 }

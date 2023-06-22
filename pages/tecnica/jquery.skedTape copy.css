@@ -1,0 +1,17 @@
+.skedTeste {
+  background-color: #cf0000;
+  transition: 200ms background-color;
+  top: 1px;
+  bottom: 0;
+  display: block;
+  position: absolute;
+  z-index: 3;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 12px;
+  color: white;
+  border: 1px solid #e32c1b;
+  min-width: 10px;
+  cursor: default;
+  line-height: 16px;
+}
