@@ -3,15 +3,39 @@ include "../../database/conexao.php";
 include "../../infra/queryService.php";
 $queryService = new queryService($conn);
 global $resultadoConsultaTecnicos;
+global $resultadoConsulta;
 $resultadoConsultaTecnicos = buscarUsers($queryService);
+$resultadoConsulta = minhaFuncao($queryService);
 function buscarUsers(QueryService $queryService)
 {
     $tabelaUsers = "users";
-    $colunaUsers = "";
+    $colunaUsers = null;
     $condicoesUsers = "user_tipo = 2";
-    $resultado = $queryService->busca($tabelaUsers, $colunaUsers, $condicoesUsers);
+    $joins = null;
+    $resultado = $queryService->busca($tabelaUsers, $colunaUsers, $condicoesUsers, $joins);
     $resultadoJson = json_encode($resultado);
     // echo "<script>console.log($resultadoJson);</script>";
+    return $resultadoJson;
+}
+
+function minhaFuncao(QueryService $queryService)
+{
+    $tabelaOS = "os";
+    $colunaUsers = "";
+    $condicoesUsers = null;
+    $joins = array(
+        "JOIN os_status ON os.os_status = os_status.os_status_id"
+    );
+    $resultado = $queryService->busca($tabelaOS, $colunaUsers, $condicoesUsers, $joins);
+
+
+    $resultadoJson = json_encode($resultado);
+
+
+
+
+    echo "<script>console.log('osss',$resultadoJson);</script>";
+
     return $resultadoJson;
 }
 ?>
@@ -145,21 +169,24 @@ function buscarUsers(QueryService $queryService)
 
         .deslocamento-event {
             background-color: blue;
-            height: 30px;
+            /* height: 30px; */
         }
 
         .deslocamento-event:hover {
             background-color: black;
         }
 
-        .atendimento-event {
+        .atendimento {
             background-color: yellow;
         }
 
         .servico {
             background-color: #FF1493;
         }
-      
+
+        .aguardandoAtendimento {
+            background-color: blue;
+        }
     </style>
 
 </head>
@@ -170,7 +197,7 @@ function buscarUsers(QueryService $queryService)
     <div class="expanded-container">
         <div class="carousel" id="carousel">
 
-            <div id="os3" class="divCarrossel" data-start-time="10" data-end-time="11">
+            <!-- <div id="os3" class="divCarrossel" data-start-time="10" data-end-time="11">
                 <div class="card-body">
                     <div class="icon-section">
                         <i class="fas fa-wrench"></i>
@@ -193,7 +220,7 @@ function buscarUsers(QueryService $queryService)
                         <p class="location">Minas Shopping</p>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
 
         </div>
@@ -204,17 +231,47 @@ function buscarUsers(QueryService $queryService)
     <div class="teste">
 
         <div class="container mt-4 timeline-container">
-    
+
             <div class="mb-4">
-    
+
                 <div class="mb-2" id="sked1"></div>
-    
+
             </div>
-    
+
         </div>
     </div>
 
-    <script type="text/javascript">
+    <script>
+        let resultadoConsulta = <?php echo $resultadoConsulta; ?>;
+
+         let osDirecionar = processOrders(resultadoConsulta, 1)
+
+        var carouselContainer = document.getElementById("carousel");
+
+        for (var i = 0; i < osDirecionar.length; i++) {
+            var objeto = osDirecionar[i];
+
+            var divOs = document.createElement("div");
+            divOs.id = "os" + (i + 3); // Começando com "os3" para evitar conflitos com os IDs existentes
+            divOs.className = "divCarrossel";
+          
+
+                            var innerHTML = `
+                    <div class="card-body">
+                    <div class="icon-section">
+                        <i class="fas fa-wrench"></i>
+                    </div>
+                    <div class="info-section">
+                        <p class="order-number">OS#${objeto.os_id}</p>
+                        <p class="tech-name">${objeto.os_cliente}</p>
+                        <p class="location">${objeto.os_solicitante}</p>
+                    </div>
+                    </div>
+                `;
+
+            divOs.innerHTML = innerHTML;
+            carouselContainer.appendChild(divOs);
+        }
         var el = document.getElementById('carousel');
         var selectedId = null;
         // var skedTapeEvents = [];
@@ -227,9 +284,7 @@ function buscarUsers(QueryService $queryService)
             selectedId = Math.floor(Math.random() * 400) + 1;
         });
 
-        var resultadoConsultaTecnicos = <?php echo $resultadoConsultaTecnicos; ?>;
-        console.log('ola', resultadoConsultaTecnicos)
-
+        var resultadoConsultaTecnicos = <?php echo $resultadoConsultaTecnicos ?>;
 
         var locations2 = resultadoConsultaTecnicos.map(function(dado, index) {
             return {
@@ -239,6 +294,13 @@ function buscarUsers(QueryService $queryService)
             };
         });
 
+        console.log('tecnicos', locations2)
+
+
+        console.log('opaió', resultadoConsulta)
+        let teste = processOrders(resultadoConsulta, 2)
+
+        console.log('yuri', teste)
 
         var events = [
             //   os ja direcionadas entrarão nestas variaveus com estes parametros
@@ -302,17 +364,28 @@ function buscarUsers(QueryService $queryService)
                 start: today(15, 01),
                 end: today(18, 0),
                 started: true,
-                type: 'deslocamento',
+                type: '',
                 className: 'servico'
             }
-            
+
 
         ];
-        console.log('ola gustyav inicio', events)
+
         events.forEach(function(event) {
             if (compareCurrentTime(event.start) == 1 && event.started == false) {
                 event.start = getCurrentTime()
-                console.log('ola gustyav', events)
+
+            }
+            // if (event.type === 'deslocamento') {
+            //     event.element.addClass('deslocamento'); //isto não funciona, tem que pesquisar como adiciona classe
+            // }
+
+        });
+
+        teste.forEach(function(event) {
+            if (compareCurrentTime(event.start) == 1 && event.started == false) {
+                event.start = getCurrentTime()
+
             }
             // if (event.type === 'deslocamento') {
             //     event.element.addClass('deslocamento'); //isto não funciona, tem que pesquisar como adiciona classe
@@ -363,7 +436,7 @@ function buscarUsers(QueryService $queryService)
             showEventDuration: true,
             scrollWithYWheel: true,
             locations: locations2.slice(),
-            events: events.slice(),
+            events: teste.slice(),
             maxTimeGapHi: 60 * 1000, // 1 minute
             minGapTimeBetween: 1 * 60 * 1000,
             snapToMins: 1,
@@ -423,6 +496,62 @@ function buscarUsers(QueryService $queryService)
                 alert('Already exists');
             }
         });
+
+
+
+
+
+
+
+
+
+
+        function processOrders(data, type) {
+            if (type === 1) {
+                // Retornar apenas as ordens de serviço com 'direcionado' igual a 'N'
+                return data.filter(order => order.direcionado === 'N');
+            } else if (type === 2) {
+                // Filtrar as ordens de serviço com 'direcionado' igual a 'Y'
+                const filteredData = data.filter(order => order.direcionado === 'Y');
+
+                // Processar as ordens de serviço para adicionar chaves e valores
+                const processedData = filteredData.map(order => {
+                    let processedOrder = {
+                        ...order
+                    };
+
+                    if (order.os_status_nome === 'Em atendimento') {
+                        // Adicionar 'className' e 'started' para 'Em atendimento'
+                        processedOrder.className = 'atendimento';
+                        processedOrder.started = true;
+                        processedOrder.name = processedOrder.os_consideracoes;
+                        const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
+                        processedOrder.location = technician.id;
+                        processedOrder.start = processedOrder.os_hora_inicio,
+                            processedOrder.end = today(15, 0),
+                            processedOrder.started = true
+                    } else if (order.os_status_nome === 'Direcionado') {
+                        // Adicionar 'className' e 'started' para 'Direcionado'
+                        processedOrder.className = 'aguardandoAtendimento';
+                        processedOrder.started = false;
+                        processedOrder.name = processedOrder.os_consideracoes;
+                        const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
+                        processedOrder.location = technician.id;
+                        processedOrder.start = processedOrder.os_hora_inicio,
+                            processedOrder.end = today(18, 0),
+                            processedOrder.started = false
+
+                    }
+
+                    return processedOrder;
+                });
+
+                // Retornar apenas o item que teve os novos atributos adicionados
+                const filteredProcessedData = processedData.filter(order => 'className' in order && 'started' in order);
+
+                return filteredProcessedData;
+            }
+        }
     </script>
 </body>
 

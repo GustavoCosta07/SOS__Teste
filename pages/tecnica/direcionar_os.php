@@ -600,7 +600,7 @@ function minhaFuncao(QueryService $queryService)
                                             <p class="location">${objeto.os_solicitante}</p>
                                         </div>
                                     </div>
-    `;
+                                 `;
 
                 divOs.innerHTML = innerHTML;
                 divContainer.appendChild(divOs);

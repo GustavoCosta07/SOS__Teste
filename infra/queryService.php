@@ -7,16 +7,24 @@ class QueryService {
         $this->conn = $conn;
     }
 
-    public function busca($tabela, $colunas = array(), $condicoes = "") {
+    public function busca($tabela, $colunas = array(), $condicoes = "", $joins = array()) {
         if (empty($colunas)) {
             $sql = "SELECT * FROM " . $tabela;
         } else {
             $sql = "SELECT " . implode(", ", $colunas) . " FROM " . $tabela;
         }
 
+        if (!empty($joins)) {
+            foreach ($joins as $join) {
+                $sql .= " " . $join;
+            }
+
+        }
+
         if (!empty($condicoes)) {
             $sql .= " WHERE " . $condicoes;
         }
+        echo "<script>console.log('consulta', " . json_encode($sql) . ");</script>";
 
         $result = mysqli_query($this->conn, $sql);
 
