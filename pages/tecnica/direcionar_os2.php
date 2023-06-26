@@ -47,11 +47,11 @@ function minhaFuncao(QueryService $queryService)
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>jQuery.skedTape</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous"> -->
     <link rel=" stylesheet" href="jquery.skedTape.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <!-- <script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script> -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/solid.css" integrity="sha384-wnAC7ln+XN0UKdcPvJvtqIH3jOjs9pnKnq9qX68ImXvOGz2JuFoEiCjT8jyZQX2z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css" integrity="sha384-HbmWTHay9psM8qyzEKPc8odH4DsOuzdejtnr+OFtDmOcIVnhgReQ4GZBH7uwcjf6" crossorigin="anonymous">
     <script src="jquery.skedTape.js"></script>
@@ -60,6 +60,15 @@ function minhaFuncao(QueryService $queryService)
 
 
     <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins';
+        }
+
         .expanded-container {
             width: 100%;
             margin: 0 auto;
@@ -68,6 +77,10 @@ function minhaFuncao(QueryService $queryService)
             border-radius: 10px;
             overflow-x: auto;
             white-space: nowrap;
+
+            display: flex;
+            justify-content: left;
+            align-items: center;
         }
 
         .divCarrossel {
@@ -77,12 +90,12 @@ function minhaFuncao(QueryService $queryService)
             border-radius: 12px;
             background-color: #0C1B38;
             border: 1px solid #0446c2;
-            margin: 10px 15px -76px;
-            cursor: move;
+            margin: 10px 15px;
+            cursor: pointer;
             font-size: 0.8em;
             color: white;
-            padding: 5px;
-            z-index: 1000 !important;
+            /* padding: 5px; */
+            /* z-index: 1000 !important; */
         }
 
         .card-body {
@@ -140,12 +153,7 @@ function minhaFuncao(QueryService $queryService)
             overflow-y: auto;
         }
 
-        .icone {
-            width: 30px;
-            height: 30px;
-            object-fit: cover;
-            border-radius: 50%;
-        }
+
 
         .deslocamento {
 
@@ -187,44 +195,95 @@ function minhaFuncao(QueryService $queryService)
         .aguardandoAtendimento {
             background-color: blue;
         }
+
+        .icone {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            border-radius: 50%;
+
+            /* margin: auto; */
+        }
+
+        .sked-tape__location {
+            position: relative;
+            padding: 0 15px;
+            background-color: #0C1B38;
+            color: #fff;
+            line-height: 54px;
+            height: 54px;
+
+            /* display: flex; */
+            /* justify-content: center; */
+            /* align-items: center; */
+        }
+
+        .sked-tape__caption {
+            display: block;
+            background-color: #0C1B38;
+            height: 24px;
+            color: #fff;
+            position: relative;
+            top: 0;
+            text-align: center;
+            border-radius: 10px 0 0 0;
+        }
+
+        .sked-tape__indicator {
+            position: absolute;
+            z-index: 4;
+            top: 0;
+            bottom: 0;
+            border-left: 1px solid #0C1B38;
+        }
+
+        .sked-tape__indicator--serifs::before {
+            top: 0;
+            border-bottom-width: 3px;
+            border-top: 3px solid #0C1B38;
+        }
+
+        .sked-tape__indicator--serifs::after {
+            bottom: 0;
+            border-top-width: 3px;
+            border-bottom: 3px solid #0C1B38;
+        }
+
+        .sked-tape__indicator--serifs::before,
+        .sked-tape__indicator--serifs::after {
+            content: '';
+            display: block;
+            position: absolute;
+            left: -4px;
+            width: 0;
+            height: 0;
+            border: 3px solid transparent;
+        }
+
+
+        .sked-tape__grid>li {
+            display: block;
+            margin: 0;
+            padding: 0;
+            background-image: linear-gradient(to right, #fff 1px, #fff 1px), linear-gradient(to right, #fff 1px, #fff 1px), linear-gradient(to right, #fff 1px, #fff 1px), linear-gradient(to right, #fff 1px, #fff 1px), linear-gradient(to right, #fff 1px, #fff 1px);
+            background-size: 1px 100%, 1px 100%, 1px 100%, 1px 100%, 1px 100%;
+            background-repeat: no-repeat;
+            background-position: 0 0, 100% 0, 25% 0, 50% 0, 75% 0;
+            min-width: 96px;
+            width: 96px;
+        }
+
+        /* .sked-tape__date:nth-child(odd) {
+            background: #751b1b;
+        } */
     </style>
 
 </head>
 
 <body>
-    <br>
-    <br>
+
     <div class="expanded-container">
-        <div class="carousel" id="carousel">
-
-            <!-- <div id="os3" class="divCarrossel" data-start-time="10" data-end-time="11">
-                <div class="card-body">
-                    <div class="icon-section">
-                        <i class="fas fa-wrench"></i>
-                    </div>
-                    <div class="info-section">
-                        <p class="order-number">OS#1234</p>
-                        <p class="tech-name">João Silva</p>
-                        <p class="location">Minas Shopping</p>
-                    </div>
-                </div>
-            </div>
-            <div id="os4" class="divCarrossel " data-start-time="13" data-end-time="14">
-                <div class="card-body">
-                    <div class="icon-section">
-                        <i class="fas fa-wrench"></i>
-                    </div>
-                    <div class="info-section">
-                        <p class="order-number">OS#1234</p>
-                        <p class="tech-name">João Silva</p>
-                        <p class="location">Minas Shopping</p>
-                    </div>
-                </div>
-            </div> -->
-
-
-        </div>
-
+        <div class="carousel" id="carousel"></div>
     </div>
 
     <br>
@@ -244,7 +303,7 @@ function minhaFuncao(QueryService $queryService)
     <script>
         let resultadoConsulta = <?php echo $resultadoConsulta; ?>;
 
-         let osDirecionar = processOrders(resultadoConsulta, 1)
+        let osDirecionar = processOrders(resultadoConsulta, 1)
 
         var carouselContainer = document.getElementById("carousel");
 
@@ -254,10 +313,10 @@ function minhaFuncao(QueryService $queryService)
             var divOs = document.createElement("div");
             divOs.id = "os" + (i + 3); // Começando com "os3" para evitar conflitos com os IDs existentes
             divOs.className = "divCarrossel";
-          
 
-                            var innerHTML = `
-                    <div class="card-body">
+
+            var innerHTML = `
+                    <div class="card-body" id="${objeto.os_id}">
                     <div class="icon-section">
                         <i class="fas fa-wrench"></i>
                     </div>
@@ -272,17 +331,24 @@ function minhaFuncao(QueryService $queryService)
             divOs.innerHTML = innerHTML;
             carouselContainer.appendChild(divOs);
         }
+
         var el = document.getElementById('carousel');
         var selectedId = null;
-        // var skedTapeEvents = [];
-        // var now = new Date();
-        // now.setSeconds(0, 0);
-        // // Adicionando listener de eventos aos elementos do carrossel.
+
         el.addEventListener('click', function(event) {
-            // Suponho que o ID do elemento está armazenado no atributo data-id.
-            event.target.classList.add('highlight-card');
-            selectedId = Math.floor(Math.random() * 400) + 1;
+            var card = event.target.closest('.card-body');
+            if (card) {
+                var previousCard = el.querySelector('.highlight-card');
+                if (previousCard) {
+                    previousCard.classList.remove('highlight-card');
+                }
+                card.classList.add('highlight-card');
+                selectedId = card.id;
+            }
         });
+
+
+
 
         var resultadoConsultaTecnicos = <?php echo $resultadoConsultaTecnicos ?>;
 
@@ -294,13 +360,13 @@ function minhaFuncao(QueryService $queryService)
             };
         });
 
-        console.log('tecnicos', locations2)
+        // console.log('tecnicos', locations2)
 
 
-        console.log('opaió', resultadoConsulta)
+        // console.log('opaió', resultadoConsulta)
         let teste = processOrders(resultadoConsulta, 2)
 
-        console.log('yuri', teste)
+        // console.log('yuri', teste)
 
         var events = [
             //   os ja direcionadas entrarão nestas variaveus com estes parametros
@@ -445,7 +511,7 @@ function minhaFuncao(QueryService $queryService)
             showIntermission: true,
             formatters: {
                 date: function(date) {
-                    return $.fn.skedTape.format.date(date, 'l', '.');
+                    return $.fn.skedTape.format.date(date, 'l', '/');
                 },
                 duration: function(ms, opts) {
                     return $.fn.skedTape.format.duration(ms, {
@@ -481,15 +547,18 @@ function minhaFuncao(QueryService $queryService)
                         startTime = currentTime;
                     }
                     $sked1.skedTape('startAdding', {
-                        name: 'New meeting' + selectedId,
+                        name: 'New meeting ' + selectedId,
                         id: selectedId,
                         start: startTime,
                         // active: true,
-                        duration: 60 * 90 * 1000,
+                        duration: 60 * 90 * 1000, //1h e meia
                         started: false,
                         className: 'deslocamento-event'
                     });
+                    document.getElementById(selectedId).classList.remove('highlight-card');
                     selectedId = null;
+
+
                 }
             } catch (e) {
                 if (e.name !== 'SkedTape.CollisionError') throw e;
@@ -498,7 +567,7 @@ function minhaFuncao(QueryService $queryService)
         });
 
 
-
+        // Mon Jun 26 2023 08:30:00 GMT-0300 (Horário Padrão de Brasília) exemplo data
 
 
 
@@ -529,7 +598,8 @@ function minhaFuncao(QueryService $queryService)
                         processedOrder.location = technician.id;
                         processedOrder.start = processedOrder.os_hora_inicio,
                             processedOrder.end = today(15, 0),
-                            processedOrder.started = true
+                            processedOrder.started = true 
+                            processedOrder.disabled = true
                     } else if (order.os_status_nome === 'Direcionado') {
                         // Adicionar 'className' e 'started' para 'Direcionado'
                         processedOrder.className = 'aguardandoAtendimento';
