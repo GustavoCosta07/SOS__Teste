@@ -4,6 +4,7 @@
  * Author: Alexander Korostin <lexkrstn@gmail.com>
  */
 
+
 (function (factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
@@ -216,6 +217,7 @@ SkedTape.prototype = {
 	getLocations: function() {
 		var locations = this.locations;
 		if (this.sorting && this.orderBy === 'name') {
+
 			locations = locations.sort(function(a, b) {
 				a = a.name.toLocaleLowerCase();
 				b = b.name.toLocaleLowerCase();
@@ -223,6 +225,8 @@ SkedTape.prototype = {
 			});
 		}
 		else if (this.sorting && this.orderBy === 'order') {
+		console.log('ola mundo')
+
 			locations = locations.sort(function(a, b) {
 				return (a.order || 0) - (b.order || 0);
 			});
@@ -239,6 +243,7 @@ SkedTape.prototype = {
 		return null;
 	},
 	addEvent: function(entry, opts) {
+		console.log('teste', entry)
 		if (!this.locationExists(entry.location)) {
 			throw new Error('Unknown location #' + entry.location);
 		}
@@ -261,8 +266,9 @@ SkedTape.prototype = {
 			url: entry.url || false,
 			className: entry.className || null,
 			disabled: entry.disabled || false,
-			active: entry.active || false,
-			userData: $.extend({}, entry.userData || {})
+			active: entry.active || true,
+			userData: $.extend({}, entry.userData || {}),
+			teste: entry.teste || ''
 		};
 		
 		if (opts && opts.preserveId && entry.id) {
@@ -710,6 +716,10 @@ SkedTape.prototype = {
 	},
 	renderEvent: function(event) {
 		// Create event node
+		if (event.teste == "gustavo") {
+			
+			console.log('hshshshs',event)
+		}
 		if (event.url && !event.disabled) {
 			var $event = $('<a/>').attr('href', event.url);
 		} else {
@@ -757,7 +767,10 @@ SkedTape.prototype = {
 		$loose.remove();
 		// Execute the hook
 		this.postRenderEvent($event, event);
+		// pegar a ultima posição e fazer testes se realmente vai sempre referenciar a ultima
+		// document.getElementById(selectedId).classList.remove('highlight-card');
 
+			// console.log('opa', $event)
 		return $event;
 	},
 	computeEventWidth: function(event) {
@@ -995,6 +1008,7 @@ SkedTape.prototype = {
 			});
 			this.$el.trigger(jqEvent, [this]);
 		}
+		
 	},
 	handleEventContextMenu: function(e) {
 		e.preventDefault();

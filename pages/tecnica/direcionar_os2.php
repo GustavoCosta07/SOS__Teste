@@ -458,7 +458,7 @@ function minhaFuncao(QueryService $queryService)
             // }
 
         });
-
+        console.log(teste)
         function getCurrentTime() {
             var currentDate = new Date();
             return currentDate;
@@ -486,6 +486,8 @@ function minhaFuncao(QueryService $queryService)
             var currentTime = new Date();
             var comparisonTime = new Date(timeString);
             if (currentTime > comparisonTime) {
+                console.log(currentTime,'currentTime')
+                console.log(comparisonTime,'n pode cair')
                 return 1;
             } else if (currentTime < comparisonTime) {
                 return -1;
@@ -553,7 +555,10 @@ function minhaFuncao(QueryService $queryService)
                         // active: true,
                         duration: 60 * 90 * 1000, //1h e meia
                         started: false,
-                        className: 'deslocamento-event'
+                        className: 'deslocamento-event',
+                        // disabled: true
+                        userData: 'Gustavio',
+                        teste: 'gustavo'
                     });
                     document.getElementById(selectedId).classList.remove('highlight-card');
                     selectedId = null;
