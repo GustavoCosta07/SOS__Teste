@@ -557,8 +557,9 @@ function minhaFuncao(QueryService $queryService)
                         started: false,
                         className: 'deslocamento-event',
                         // disabled: true
-                        userData: 'Gustavio',
-                        teste: 'gustavo'
+                        userData: locations2,
+                        teste: 'gustavo',
+                        locations: 'locations2'
                     });
                     document.getElementById(selectedId).classList.remove('highlight-card');
                     selectedId = null;
@@ -602,7 +603,7 @@ function minhaFuncao(QueryService $queryService)
                         const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
                         processedOrder.location = technician.id;
                         processedOrder.start = processedOrder.os_hora_inicio,
-                            processedOrder.end = today(15, 0),
+                            processedOrder.end = today(20, 0),
                             processedOrder.started = true 
                             processedOrder.disabled = true
                     } else if (order.os_status_nome === 'Direcionado') {
