@@ -243,7 +243,7 @@
 			return null;
 		},
 		addEvent: function (entry, opts) {
-			console.log('teste', entry)
+			// console.log('teste', entry)
 			if (!this.locationExists(entry.location)) {
 				throw new Error('Unknown location #' + entry.location);
 			}
@@ -272,6 +272,8 @@
 			};
 
 			if (opts && opts.preserveId && entry.id) {
+				console.log(opts)
+				console.log(entry.id)
 				if (this.getEvent(entry.id)) {
 					throw new Error('Cannot preserve id: already exists');
 				}
@@ -719,26 +721,44 @@
 			if (event.teste == "gustavo") {
 
 				console.log('hshshshs', event)
-				alert(`O.S Direcionada para o técnico ${event.userData[event.location - 1].name}`)
 
-				var dados = {
-					os_status: 1,
-					os_id: event.id,
-					direcionado: 'Y',
-					os_hora_inicio: event.start
-				  };
-				$.ajax({
-					url: 'seu_arquivo_php.php',
-					method: 'PUT',
-					data: dados,
-					success: function (response) {
-						console.log(response);
+				const event_id = event.id; // exemplo
+				const event_start = event.start; // exemplo
+				const event_idTecnico = event.userData[event.location - 1].idTecnico
+				// Montar o objeto de dados a ser enviado no corpo da requisição
+				const data = {
+					event_id: event_id,
+					event_start: event_start,
+					event_idTecnico: event_idTecnico
+				};
+				console.log('data', data)
+
+				fetch('teste.php', {
+					method: 'POST', // ou 'PUT'
+					headers: {
+						'Content-Type': 'application/json'
 					},
-					error: function (xhr, status, error) {
-						console.error(error);
-					}
-				});
+					body: JSON.stringify(data)
+				})
+					.then(function (response) {
+						if (response.ok) {
+							return response.text();
+						} else {
+							throw new Error('Erro na requisição: ' + response.status);
+						}
+					})
+					.then(function (data) {
+						// Tratar a resposta do PHP, se necessário
+						console.log(data);
+					})
+					.catch(function (error) {
+						// Tratar qualquer erro ocorrido durante a requisição
+						console.log('Erro: ' + error.message);
+					});
+
+					alert(`O.S Direcionada para o técnico ${event.userData[event.location - 1].name}`)
 			}
+
 			if (event.url && !event.disabled) {
 				var $event = $('<a/>').attr('href', event.url);
 			} else {
@@ -1463,14 +1483,14 @@
 
 
 
-function teste(params) {
-	const teste = `UPDATE os
-	SET os_status = '1',
-		direcionado = 'Y',
-		os_hora_inicio = ${event.start}
-	WHERE os_id = ${event.id};
+// function teste(params) {
+// 	const teste = `UPDATE os
+// 	SET os_status = '1',
+// 		direcionado = 'Y',
+// 		os_hora_inicio = ${event.start}
+// 	WHERE os_id = ${event.id};
 	
-	`
+// 	`
 
 
-}
+// }

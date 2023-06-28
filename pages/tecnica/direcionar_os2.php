@@ -364,7 +364,7 @@ function minhaFuncao(QueryService $queryService)
 
 
         // console.log('opaió', resultadoConsulta)
-        let teste = processOrders(resultadoConsulta, 2)
+        let teste2 = processOrders(resultadoConsulta, 2)
 
         // console.log('yuri', teste)
 
@@ -448,7 +448,7 @@ function minhaFuncao(QueryService $queryService)
 
         });
 
-        teste.forEach(function(event) {
+        teste2.forEach(function(event) {
             if (compareCurrentTime(event.start) == 1 && event.started == false) {
                 event.start = getCurrentTime()
 
@@ -458,11 +458,20 @@ function minhaFuncao(QueryService $queryService)
             // }
 
         });
-        console.log(teste)
+        console.log(teste2)
+
         function getCurrentTime() {
             var currentDate = new Date();
             return currentDate;
         }
+
+        function addMinutesToTime(initialTime, minutesToAdd) {
+            var updatedTime = new Date(initialTime);
+            updatedTime.setMinutes(updatedTime.getMinutes() + minutesToAdd);
+            return updatedTime
+        }
+
+
 
         function today(hours, minutes) {
             var date = new Date();
@@ -486,8 +495,6 @@ function minhaFuncao(QueryService $queryService)
             var currentTime = new Date();
             var comparisonTime = new Date(timeString);
             if (currentTime > comparisonTime) {
-                console.log(currentTime,'currentTime')
-                console.log(comparisonTime,'n pode cair')
                 return 1;
             } else if (currentTime < comparisonTime) {
                 return -1;
@@ -504,7 +511,7 @@ function minhaFuncao(QueryService $queryService)
             showEventDuration: true,
             scrollWithYWheel: true,
             locations: locations2.slice(),
-            events: teste.slice(),
+            events: teste2.slice(),
             maxTimeGapHi: 60 * 1000, // 1 minute
             minGapTimeBetween: 1 * 60 * 1000,
             snapToMins: 1,
@@ -525,7 +532,7 @@ function minhaFuncao(QueryService $queryService)
 
             postRenderLocation: function($el, location, canAdd) {
                 this.constructor.prototype.postRenderLocation($el, location, canAdd);
-                $el.prepend('<img src="https://s3.amazonaws.com/attachments.fieldcontrol.com.br/accounts/6118/employees/9271b714-c5cb-4f75-bdd0-abc71276dfd0/518e.83c14040f.png?id=1bf9.cb7bee33a" alt="Imagem" class="icone"/>');
+                // $el.prepend('<img src="https://s3.amazonaws.com/attachments.fieldcontrol.com.br/accounts/6118/employees/9271b714-c5cb-4f75-bdd0-abc71276dfd0/518e.83c14040f.png?id=1bf9.cb7bee33a" alt="Imagem" class="icone"/>');
             }
         });
         $sked1.on('event:dragEnded.skedtape', function(e) {
@@ -544,6 +551,7 @@ function minhaFuncao(QueryService $queryService)
             try {
                 if (selectedId) {
                     var startTime = e.detail.time;
+                    console.log('horas', startTime)
                     var currentTime = new Date();
                     if (startTime < currentTime) {
                         startTime = currentTime;
@@ -603,10 +611,11 @@ function minhaFuncao(QueryService $queryService)
                         const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
                         processedOrder.location = technician.id;
                         processedOrder.start = processedOrder.os_hora_inicio,
-                            processedOrder.end = today(20, 0),
-                            processedOrder.started = true 
-                            processedOrder.disabled = true
+                        processedOrder.end = addMinutesToTime(processedOrder.os_hora_inicio, parseInt(processedOrder.os_previsao_hora_final)),
+                        processedOrder.started = true
+                        // processedOrder.update = false
                     } else if (order.os_status_nome === 'Direcionado') {
+                        // console.log(processOrder)
                         // Adicionar 'className' e 'started' para 'Direcionado'
                         processedOrder.className = 'aguardandoAtendimento';
                         processedOrder.started = false;
@@ -614,8 +623,8 @@ function minhaFuncao(QueryService $queryService)
                         const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
                         processedOrder.location = technician.id;
                         processedOrder.start = processedOrder.os_hora_inicio,
-                            processedOrder.end = today(18, 0),
-                            processedOrder.started = false
+                        processedOrder.end = addMinutesToTime(processedOrder.os_hora_inicio, parseInt(processedOrder.os_previsao_hora_final)),
+                        processedOrder.started = false
 
                     }
 

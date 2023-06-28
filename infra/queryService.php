@@ -24,7 +24,7 @@ class QueryService {
         if (!empty($condicoes)) {
             $sql .= " WHERE " . $condicoes;
         }
-        // echo "<script>console.log('consulta', " . json_encode($sql) . ");</script>";
+        echo "<script>console.log('consulta', " . json_encode($sql) . ");</script>";
 
         $result = mysqli_query($this->conn, $sql);
 

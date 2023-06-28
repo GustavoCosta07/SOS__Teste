@@ -1,38 +1,38 @@
 <?php
-$servidor = "mysql";
-$usuario = "myuser";
-$senha = "mypassword";
-$dbname = "sos_teste";
+    $servidor = "mysql";
+    $usuario = "myuser";
+    $senha = "mypassword";
+    $dbname = "sos_teste";
 
-// Criar a conexão
-$conn = mysqli_connect($servidor, $usuario, $senha, $dbname);
-mysqli_set_charset($conn, "utf8");
+    // Criar a conexão
+    $conn = mysqli_connect($servidor, $usuario, $senha, $dbname);
+    mysqli_set_charset($conn, "utf8");
 
-if (!$conn) {
-    die("Falha na conexão com o banco de dados: " . mysqli_connect_error());
-}
+    // Verificar se a conexão foi estabelecida corretamente
+    if (!$conn) {
+        die("Falha na conexão: " . mysqli_connect_error());
+    }
 
-// Dados a serem atualizados
-$os_status = 1;
-$direcionado = 'Y';
-$os_hora_inicio = $_POST['start']; // Substitua $_POST['start'] pela variável correta que contém o valor de event.start
+    // Recuperar os valores dos parâmetros enviados pela requisição POST ou PUT
+    $data = json_decode(file_get_contents('php://input'), true);
+    $event_id = $data['event_id'];
+    $event_start = $data['event_start'];
+    $event_idTecnico = $data['event_idTecnico'];
 
-$os_id = $_POST['id']; // Substitua $_POST['id'] pela variável correta que contém o valor de event.id
+    // Atualizar os registros na tabela "os"
+    $sql = "UPDATE os
+            SET os_status = '2',
+                direcionado = 'Y',
+                os_hora_inicio = '$event_start',
+                os_usuario = '$event_idTecnico'
+            WHERE os_id = '$event_id'";
 
-// Monta a query de atualização
-$query = "UPDATE os
-          SET os_status = '$os_status',
-              direcionado = '$direcionado',
-              os_hora_inicio = '$os_hora_inicio'
-          WHERE os_id = '$os_id'";
+    if (mysqli_query($conn, $sql)) {
+        echo "Atualização realizada com sucesso.";
+    } else {
+        echo "Erro na atualização: " . mysqli_error($conn);
+    }
 
-// Executa a query de atualização
-if (mysqli_query($conn, $query)) {
-    echo "Dados atualizados com sucesso!";
-} else {
-    echo "Erro ao atualizar dados: " . mysqli_error($conn);
-}
-
-// Fecha a conexão com o banco de dados
-mysqli_close($conn);
+    // Fechar a conexão
+    mysqli_close($conn);
 ?>
