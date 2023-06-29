@@ -5,7 +5,7 @@ $queryService = new queryService($conn);
 global $resultadoConsultaTecnicos;
 global $resultadoConsulta;
 $resultadoConsultaTecnicos = buscarUsers($queryService);
-$resultadoConsulta = minhaFuncao($queryService);
+$resultadoConsulta = minhaFuncao($conn);
 function buscarUsers(QueryService $queryService)
 {
     $tabelaUsers = "users";
@@ -18,24 +18,47 @@ function buscarUsers(QueryService $queryService)
     return $resultadoJson;
 }
 
-function minhaFuncao(QueryService $queryService)
+function minhaFuncao($conn)
 {
-    $tabelaOS = "os";
-    $colunaUsers = "";
-    $condicoesUsers = null;
-    $joins = array(
-        "JOIN os_status ON os.os_status = os_status.os_status_id"
-    );
-    $resultado = $queryService->busca($tabelaOS, $colunaUsers, $condicoesUsers, $joins);
+    // $tabelaOS = "os";
+    // $colunaUsers = "";
+    // $condicoesUsers = null;
+    // $joins = array(
+    //     "JOIN os_status ON os.os_status = os_status.os_status_id"
+    // );
+    // $resultado = $queryService->busca($tabelaOS, $colunaUsers, $condicoesUsers, $joins);
 
 
-    $resultadoJson = json_encode($resultado);
+    // $resultadoJson = json_encode($resultado);
 
 
 
 
+    // echo "<script>console.log('osss',$resultadoJson);</script>";
+
+    // return $resultadoJson;
+
+    // Execução da consulta SQL
+    $query = "SELECT os.*, clientes.cliente_fantasia, os_tipos.os_tipo_nome, os_status.os_status_nome
+        FROM os
+        JOIN clientes ON os.os_cliente = clientes.cliente_id
+        JOIN os_status ON os.os_status = os_status.os_status_id
+        JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id
+        
+        ";
+    $result = mysqli_query($conn, $query);
+
+    if (!$result) {
+        die("Erro na consulta: " . mysqli_error($conn));
+    }
+
+    // Processamento dos resultados
+    $data = array();
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data[] = $row;
+    }
+    $resultadoJson = json_encode($data);
     echo "<script>console.log('osss',$resultadoJson);</script>";
-
     return $resultadoJson;
 }
 ?>
@@ -321,9 +344,9 @@ function minhaFuncao(QueryService $queryService)
                         <i class="fas fa-wrench"></i>
                     </div>
                     <div class="info-section">
-                        <p class="order-number">OS#${objeto.os_id}</p>
-                        <p class="tech-name">${objeto.os_cliente}</p>
-                        <p class="location">${objeto.os_solicitante}</p>
+                        <p class="order-number" style="font-size: 8px;">${objeto.cliente_fantasia}</p>
+                        <p class="tech-name" style="font-size: 12px;">${objeto.os_tipo_nome}</p>
+                        <p class="location">${converterDataHora(objeto.os_data_abertura)}</p>
                     </div>
                     </div>
                 `;
@@ -451,6 +474,12 @@ function minhaFuncao(QueryService $queryService)
         teste2.forEach(function(event) {
             if (compareCurrentTime(event.start) == 1 && event.started == false) {
                 event.start = getCurrentTime()
+                // fazer outro for para verificar se existe mais de uma os com um tecnico e se ela esta em horario a frente para se arrastar 
+                // - verificar se tem os pro mesmo tecnico e se a hora inicial é antes da hora inicial da outra
+                // se for significa que ela esta após ela, então calcular onde ela deve estar 
+                // if (condition) {
+                    
+                // }
 
             }
             // if (event.type === 'deslocamento') {
@@ -465,11 +494,50 @@ function minhaFuncao(QueryService $queryService)
             return currentDate;
         }
 
-        function addMinutesToTime(initialTime, minutesToAdd) {
+        function addMinutesToTime(initialTime, minutesToAdd, status) {
             var updatedTime = new Date(initialTime);
             updatedTime.setMinutes(updatedTime.getMinutes() + minutesToAdd);
+
+            if (compareCurrentTime(initialTime) == 1 && status === 'Direcionado') {
+                var updatedTime = new Date()
+                updatedTime.setMinutes(updatedTime.getMinutes() + minutesToAdd);
+
+            }
             return updatedTime
         }
+
+        function converterDataHora(dataHoraString) {
+            // Extrair as partes da data e hora
+            var partes = dataHoraString.split(" ");
+            var dataPartes = partes[0].split("-");
+            var horaPartes = partes[1].split(":");
+
+            // Criar uma instância de Date com as partes extraídas
+            var dataHora = new Date(
+                parseInt(dataPartes[0]),
+                parseInt(dataPartes[1]) - 1,
+                parseInt(dataPartes[2]),
+                parseInt(horaPartes[0]),
+                parseInt(horaPartes[1]),
+                parseInt(horaPartes[2])
+            );
+
+            // Formatar a data e hora como string no formato desejado
+            var dataFormatada = ("0" + dataHora.getDate()).slice(-2);
+            var mesFormatado = ("0" + (dataHora.getMonth() + 1)).slice(-2);
+            var anoFormatado = dataHora.getFullYear();
+            var horaFormatada = ("0" + dataHora.getHours()).slice(-2);
+            var minutosFormatados = ("0" + dataHora.getMinutes()).slice(-2);
+            var segundosFormatados = ("0" + dataHora.getSeconds()).slice(-2);
+
+            var dataHoraFormatada = dataFormatada + "/" + mesFormatado + "/" + anoFormatado + " " +
+                horaFormatada + ":" + minutosFormatados + ":" + segundosFormatados;
+
+            return dataHoraFormatada;
+        }
+
+
+
 
 
 
@@ -585,10 +653,6 @@ function minhaFuncao(QueryService $queryService)
 
 
 
-
-
-
-
         function processOrders(data, type) {
             if (type === 1) {
                 // Retornar apenas as ordens de serviço com 'direcionado' igual a 'N'
@@ -611,9 +675,10 @@ function minhaFuncao(QueryService $queryService)
                         const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
                         processedOrder.location = technician.id;
                         processedOrder.start = processedOrder.os_hora_inicio,
-                        processedOrder.end = addMinutesToTime(processedOrder.os_hora_inicio, parseInt(processedOrder.os_previsao_hora_final)),
-                        processedOrder.started = true
-                        // processedOrder.update = false
+                            processedOrder.end = addMinutesToTime(processedOrder.os_hora_inicio, parseInt(processedOrder.os_previsao_hora_final)),
+                            processedOrder.started = true
+                        // processedOrder.disabled = true
+                        // processedOrder.active = false
                     } else if (order.os_status_nome === 'Direcionado') {
                         // console.log(processOrder)
                         // Adicionar 'className' e 'started' para 'Direcionado'
@@ -623,8 +688,8 @@ function minhaFuncao(QueryService $queryService)
                         const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
                         processedOrder.location = technician.id;
                         processedOrder.start = processedOrder.os_hora_inicio,
-                        processedOrder.end = addMinutesToTime(processedOrder.os_hora_inicio, parseInt(processedOrder.os_previsao_hora_final)),
-                        processedOrder.started = false
+                            processedOrder.end = addMinutesToTime(processedOrder.os_hora_inicio, parseInt(processedOrder.os_previsao_hora_final), processedOrder.os_status_nome),
+                            processedOrder.started = false
 
                     }
 

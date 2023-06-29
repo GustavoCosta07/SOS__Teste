@@ -718,6 +718,7 @@
 		},
 		renderEvent: function (event) {
 			// Create event node
+			console.log('opa')
 			if (event.teste == "gustavo") {
 
 				console.log('hshshshs', event)
