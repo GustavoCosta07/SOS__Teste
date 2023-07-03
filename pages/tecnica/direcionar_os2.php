@@ -666,15 +666,23 @@ function minhaFuncao($conn)
                     let processedOrder = {
                         ...order
                     };
-
+                    const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
+                        processedOrder.location = technician.id;
                     if (order.os_status_nome === 'Em atendimento') {
                         // Adicionar 'className' e 'started' para 'Em atendimento'
                         processedOrder.className = 'atendimento';
                         processedOrder.started = true;
                         processedOrder.name = processedOrder.os_consideracoes;
-                        const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
-                        processedOrder.location = technician.id;
-                        processedOrder.start = processedOrder.os_hora_inicio,
+                        // const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
+                        // processedOrder.location = technician.id;
+                        processedOrder.start = processedOrder.os_hora_inicio, //aqui devo chamar uma função e passar a order
+                        // dentro da função verificar de qual order deste tecnico se refere 
+                        // na função deve-se ter acesso a lista de os dividida por tecnico
+                        // a função vai iterar por todas as os do tecnico e verificar a hora de inicio imutavel 
+                        // a os com a hora de inicio imutavel é a primeira 
+                        // dentro desta verificação eu devo verificar a situação das outras os, 
+                        // se ela for a segunda da lista, devo verificar qual situação esta a anterior a ela 
+                        // 
                             processedOrder.end = addMinutesToTime(processedOrder.os_hora_inicio, parseInt(processedOrder.os_previsao_hora_final)),
                             processedOrder.started = true
                         // processedOrder.disabled = true
@@ -685,8 +693,8 @@ function minhaFuncao($conn)
                         processedOrder.className = 'aguardandoAtendimento';
                         processedOrder.started = false;
                         processedOrder.name = processedOrder.os_consideracoes;
-                        const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
-                        processedOrder.location = technician.id;
+                        // const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
+                        // processedOrder.location = technician.id;
                         processedOrder.start = processedOrder.os_hora_inicio,
                             processedOrder.end = addMinutesToTime(processedOrder.os_hora_inicio, parseInt(processedOrder.os_previsao_hora_final), processedOrder.os_status_nome),
                             processedOrder.started = false
