@@ -325,7 +325,7 @@ function minhaFuncao($conn)
 
     <script>
         let resultadoConsulta = <?php echo $resultadoConsulta; ?>;
-
+        let OsPorTecnico = []
         let osDirecionar = processOrders(resultadoConsulta, 1)
 
         var carouselContainer = document.getElementById("carousel");
@@ -478,7 +478,7 @@ function minhaFuncao($conn)
                 // - verificar se tem os pro mesmo tecnico e se a hora inicial é antes da hora inicial da outra
                 // se for significa que ela esta após ela, então calcular onde ela deve estar 
                 // if (condition) {
-                    
+
                 // }
 
             }
@@ -487,7 +487,6 @@ function minhaFuncao($conn)
             // }
 
         });
-        console.log(teste2)
 
         function getCurrentTime() {
             var currentDate = new Date();
@@ -536,6 +535,67 @@ function minhaFuncao($conn)
             return dataHoraFormatada;
         }
 
+        function gerarHoraInicio(OsPorTecnico) {
+            // const tecnicoOrdens = OsPorTecnico.find(item => item.idTecnico === ordem.os_usuario);
+            // const ordemAtual = tecnicoOrdens.ordens.find(item => item.os_usuario == ordem.os_usuario);
+
+            // console.log('nova função', ordemAtual)
+
+            // if (ordemAtual && ordemAtual.start) {
+            //     const horaInicioImutavel = new Date(ordemAtual.start);
+            //     const horaAtual = new Date();
+
+            //     if (horaInicioImutavel < horaAtual) {
+            //         const horaFinalImutavel = new Date(ordemAtual.end);
+            //         const diff = Math.floor((horaAtual - horaInicioImutavel) / (1000 * 60)); // Diferença em minutos
+            //         const novaHoraInicio = new Date(horaAtual.getTime() + diff * 60000); // Adiciona a diferença à hora atual
+
+            //         // Atualiza a hora de início da ordem com a nova hora calculada
+            //         ordem.start = novaHoraInicio;
+            //         ordem.end = new Date(novaHoraInicio.getTime() + (horaFinalImutavel - horaInicioImutavel));
+
+            //         // Atualiza a propriedade "started" para true, indicando que a ordem foi iniciada
+            //         ordem.started = true;
+            //     }
+            // }
+
+            // return ordem.start;
+
+            OsPorTecnico.forEach(tecnico => {
+                const ordensDoTecnico = tecnico.ordens;
+
+                // Ordenar as ordens pelo horário de início imutável (horaInicialEsperada)
+                ordensDoTecnico.sort((a, b) => a.horaInicialEsperada - b.horaInicialEsperada);
+
+                for (let i = 0; i < ordensDoTecnico.length; i++) {
+                    const ordem = ordensDoTecnico[i];
+                    const ordemAnterior = ordensDoTecnico[i - 1];
+
+                    if (i === 0) {
+                        // Primeira ordem do técnico
+                        // ordem.start = ordem.horaInicialEsperada;
+                        if (compareCurrentTime(ordem.horaInicialEsperada) == 1 && ordem.started == false) {
+                            ordem.start = getCurrentTime()
+                        }
+
+                        if (compareCurrentTime(ordem.horaInicialEsperada) == 1 && ordem.started == true) {
+                            ordem.start = getCurrentTime()
+                            ordem.end =  addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
+                        }
+
+                        if (compareCurrentTime(ordem.end) == 1 && ordem.finalized == false) {
+                            ordem.end = getCurrentTime()
+                        }
+                        
+                    } else {
+                        // Ordens subsequentes ----- verificar sobre qual ordem deve ser feita a comparação  
+                        ordem.start = ordemAnterior.start
+                        ordem.end =  addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
+                    }
+                }
+            });
+            console.log(OsPorTecnico)
+        }
 
 
 
@@ -619,7 +679,6 @@ function minhaFuncao($conn)
             try {
                 if (selectedId) {
                     var startTime = e.detail.time;
-                    console.log('horas', startTime)
                     var currentTime = new Date();
                     if (startTime < currentTime) {
                         startTime = currentTime;
@@ -661,40 +720,63 @@ function minhaFuncao($conn)
                 // Filtrar as ordens de serviço com 'direcionado' igual a 'Y'
                 const filteredData = data.filter(order => order.direcionado === 'Y');
 
+                const processedData2 = filteredData.map(order => {
+                    let processedOrder = {
+                        ...order
+                    };
+                    const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
+                    processedOrder.location = technician.id;
+                    processedOrder.horaInicialEsperada = processedOrder.os_data_abertura
+                    processedOrder.started = (processedOrder.os_status_nome === 'Em atendimento') ? true : (order.os_status_nome === 'Direcionado') ? false : false;
+
+                        if (technician) {
+                            const tecnicoIndex = OsPorTecnico.findIndex(item => item.idTecnico === technician.idTecnico);
+                            if (tecnicoIndex !== -1) {
+                                OsPorTecnico[tecnicoIndex].ordens.push(processedOrder);
+                            } else {
+                                OsPorTecnico.push({
+                                    idTecnico: technician.idTecnico,
+                                    ordens: [processedOrder]
+                                });
+                            }
+                        }
+
+                    // Converta o array "OsPorTecnico" em um array com base nas posições
+                    const OsPorTecnicoArray = OsPorTecnico.map((item, index) => ({
+                        posição: index,
+                        ordens: item.ordens
+                    }));
+
+                    return processedOrder;
+                });
+                gerarHoraInicio(OsPorTecnico)
                 // Processar as ordens de serviço para adicionar chaves e valores
                 const processedData = filteredData.map(order => {
                     let processedOrder = {
                         ...order
                     };
                     const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
-                        processedOrder.location = technician.id;
+                    processedOrder.location = technician.id;
+
                     if (order.os_status_nome === 'Em atendimento') {
-                        // Adicionar 'className' e 'started' para 'Em atendimento'
                         processedOrder.className = 'atendimento';
                         processedOrder.started = true;
                         processedOrder.name = processedOrder.os_consideracoes;
-                        // const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
-                        // processedOrder.location = technician.id;
                         processedOrder.start = processedOrder.os_hora_inicio, //aqui devo chamar uma função e passar a order
-                        // dentro da função verificar de qual order deste tecnico se refere 
-                        // na função deve-se ter acesso a lista de os dividida por tecnico
-                        // a função vai iterar por todas as os do tecnico e verificar a hora de inicio imutavel 
-                        // a os com a hora de inicio imutavel é a primeira 
-                        // dentro desta verificação eu devo verificar a situação das outras os, 
-                        // se ela for a segunda da lista, devo verificar qual situação esta a anterior a ela 
-                        // 
+                            // dentro da função verificar de qual order deste tecnico se refere 
+                            // na função deve-se ter acesso a lista de os dividida por tecnico
+                            // a função vai iterar por todas as os do tecnico e verificar a hora de inicio imutavel 
+                            // a os com a hora de inicio imutavel é a primeira 
+                            // dentro desta verificação eu devo verificar a situação das outras os, 
+                            // se ela for a segunda da lista, devo verificar qual situação esta a anterior a ela 
                             processedOrder.end = addMinutesToTime(processedOrder.os_hora_inicio, parseInt(processedOrder.os_previsao_hora_final)),
                             processedOrder.started = true
                         // processedOrder.disabled = true
                         // processedOrder.active = false
                     } else if (order.os_status_nome === 'Direcionado') {
-                        // console.log(processOrder)
-                        // Adicionar 'className' e 'started' para 'Direcionado'
                         processedOrder.className = 'aguardandoAtendimento';
                         processedOrder.started = false;
                         processedOrder.name = processedOrder.os_consideracoes;
-                        // const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
-                        // processedOrder.location = technician.id;
                         processedOrder.start = processedOrder.os_hora_inicio,
                             processedOrder.end = addMinutesToTime(processedOrder.os_hora_inicio, parseInt(processedOrder.os_previsao_hora_final), processedOrder.os_status_nome),
                             processedOrder.started = false
