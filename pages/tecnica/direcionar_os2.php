@@ -535,8 +535,14 @@ function minhaFuncao($conn)
             return dataHoraFormatada;
         }
 
-        function gerarHoraInicio(OsPorTecnico) {
-            // const tecnicoOrdens = OsPorTecnico.find(item => item.idTecnico === ordem.os_usuario);
+        function verifyOrdemAnterior(ordemAnterior, ordemAnteriorAanterior, type) {
+            //type vai representar qual verificação foi feita, exemplo: 
+            // - esta atrasado e não iniciou? type = 1
+            // - esta atrasado mas ja começou? type = 2
+        }
+
+        function gerarHoraInicio(OsPorTecnicoFunction) {
+            // const tecnicoOrdens = OsPorTecnicoFunction.find(item => item.idTecnico === ordem.os_usuario);
             // const ordemAtual = tecnicoOrdens.ordens.find(item => item.os_usuario == ordem.os_usuario);
 
             // console.log('nova função', ordemAtual)
@@ -561,40 +567,69 @@ function minhaFuncao($conn)
 
             // return ordem.start;
 
-            OsPorTecnico.forEach(tecnico => {
+            OsPorTecnicoFunction.forEach(tecnico => {
                 const ordensDoTecnico = tecnico.ordens;
+                let OrdemAtualOuAnterior = true
 
                 // Ordenar as ordens pelo horário de início imutável (horaInicialEsperada)
-                ordensDoTecnico.sort((a, b) => a.horaInicialEsperada - b.horaInicialEsperada);
+                ordensDoTecnico.sort((a, b) => a.os_hora_inicial_esperada - b.os_hora_inicial_esperada);
 
                 for (let i = 0; i < ordensDoTecnico.length; i++) {
                     const ordem = ordensDoTecnico[i];
-                    const ordemAnterior = ordensDoTecnico[i - 1];
+                    const ordemAnterior = i > 0 ? ordensDoTecnico[i - 1] : ordensDoTecnico[i];
 
-                    if (i === 0) {
-                        // Primeira ordem do técnico
-                        // ordem.start = ordem.horaInicialEsperada;
-                        if (compareCurrentTime(ordem.horaInicialEsperada) == 1 && ordem.started == false) {
-                            ordem.start = getCurrentTime()
-                        }
 
-                        if (compareCurrentTime(ordem.horaInicialEsperada) == 1 && ordem.started == true) {
-                            ordem.start = getCurrentTime()
-                            ordem.end =  addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
-                        }
-
-                        if (compareCurrentTime(ordem.end) == 1 && ordem.finalized == false) {
-                            ordem.end = getCurrentTime()
+                    if (ordem.os_id != ordemAnterior.os_id) { //se for diferente é hora de mexer na ordem atual, se for igual não precisa pois significa que é a primeira
+                        if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 1 && ordem.os_started == false) {
+                            //isto só significa que a os esta atrasada e o tecnico não iniciou a ordem
+                            ordem.start = i > 0 ? verifyOrdemAnterior(ordem, ordemAnterior, 1) : getCurrentTime();
+                            ordem.end = addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
                         }
                         
-                    } else {
-                        // Ordens subsequentes ----- verificar sobre qual ordem deve ser feita a comparação  
-                        ordem.start = ordemAnterior.start
-                        ordem.end =  addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
+                        if (compareCurrentTime(ordemAnterior.os_hora_inicial_esperada) == 1 && ordemAnterior.os_started == true) {
+                            ordem.start = ordemAnterior.os_hora_inicio
+                            ordem.end = addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final))
+                        }
+
+                        if (ordemAnterior.os_started == true && compareCurrentTime(ordemAnterior.end) == 1 && ordemAnterior.finalized == false) {
+                            ordemAnterior.end = addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final))
+                        }
                     }
+
+                    // Primeira ordem do técnico
+                    // as verificações vão ser quase sempre as mesma, depois da para atribuir isto a um serviço dinamico
+                    // ordem.start = ordem.horaInicialEsperada;
+                    if (OrdemAtualOuAnterior) {
+
+                        if (compareCurrentTime(ordemAnterior.os_hora_inicial_esperada) == 1 && ordemAnterior.os_started == false) {
+                            ordemAnterior.start = getCurrentTime()
+                            ordemAnterior.end = addMinutesToTime(ordemAnterior.start, parseInt(ordemAnterior.os_previsao_hora_final))
+                        }
+
+                        if (compareCurrentTime(ordemAnterior.os_hora_inicial_esperada) == 1 && ordemAnterior.os_started == true) {
+                            ordemAnterior.start = ordemAnterior.os_hora_inicio
+                            ordemAnterior.end = addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final))
+                        }
+
+                        if (ordemAnterior.os_started == true && compareCurrentTime(ordemAnterior.end) == 1 && ordemAnterior.finalized == false) {
+                            ordemAnterior.end = addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final))
+                        }
+                        OrdemAtualOuAnterior = false
+                    }
+
+
+
+
+
+
+
                 }
             });
-            console.log(OsPorTecnico)
+            console.log(OsPorTecnicoFunction)
+            const listaSimples = Object.values(OsPorTecnicoFunction).flatMap(item => item.ordens);
+
+            console.log('madureira',listaSimples);
+            return listaSimples
         }
 
 
@@ -726,20 +761,19 @@ function minhaFuncao($conn)
                     };
                     const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
                     processedOrder.location = technician.id;
-                    processedOrder.horaInicialEsperada = processedOrder.os_data_abertura
-                    processedOrder.started = (processedOrder.os_status_nome === 'Em atendimento') ? true : (order.os_status_nome === 'Direcionado') ? false : false;
+                    processedOrder.os_started = (processedOrder.os_status_nome === 'Em atendimento') ? true : (order.os_status_nome === 'Direcionado') ? false : false;
 
-                        if (technician) {
-                            const tecnicoIndex = OsPorTecnico.findIndex(item => item.idTecnico === technician.idTecnico);
-                            if (tecnicoIndex !== -1) {
-                                OsPorTecnico[tecnicoIndex].ordens.push(processedOrder);
-                            } else {
-                                OsPorTecnico.push({
-                                    idTecnico: technician.idTecnico,
-                                    ordens: [processedOrder]
-                                });
-                            }
+                    if (technician) {
+                        const tecnicoIndex = OsPorTecnico.findIndex(item => item.idTecnico === technician.idTecnico);
+                        if (tecnicoIndex !== -1) {
+                            OsPorTecnico[tecnicoIndex].ordens.push(processedOrder);
+                        } else {
+                            OsPorTecnico.push({
+                                idTecnico: technician.idTecnico,
+                                ordens: [processedOrder]
+                            });
                         }
+                    }
 
                     // Converta o array "OsPorTecnico" em um array com base nas posições
                     const OsPorTecnicoArray = OsPorTecnico.map((item, index) => ({
@@ -749,7 +783,7 @@ function minhaFuncao($conn)
 
                     return processedOrder;
                 });
-                gerarHoraInicio(OsPorTecnico)
+                const teste = gerarHoraInicio(OsPorTecnico)
                 // Processar as ordens de serviço para adicionar chaves e valores
                 const processedData = filteredData.map(order => {
                     let processedOrder = {
@@ -789,7 +823,7 @@ function minhaFuncao($conn)
                 // Retornar apenas o item que teve os novos atributos adicionados
                 const filteredProcessedData = processedData.filter(order => 'className' in order && 'started' in order);
 
-                return filteredProcessedData;
+                return teste;
             }
         }
     </script>
