@@ -502,6 +502,13 @@ function minhaFuncao($conn)
                 updatedTime.setMinutes(updatedTime.getMinutes() + minutesToAdd);
 
             }
+
+            if (status === 'Direcionado') {
+                var updatedTime = new Date()
+                let minutes = minutesToAdd + 1
+                updatedTime.setMinutes(updatedTime.getMinutes() + minutes);
+
+            }
             return updatedTime
         }
 
@@ -535,44 +542,46 @@ function minhaFuncao($conn)
             return dataHoraFormatada;
         }
 
-        function verifyOrdemAnterior(ordemAnterior, ordemAnteriorAanterior, type) {
+        function verifyOrdemAnterior(ordemAtual, ordemAnterior, type) {
             //type vai representar qual verificação foi feita, exemplo: 
             // - esta atrasado e não iniciou? type = 1
             // - esta atrasado mas ja começou? type = 2
+
+            if (type == 1) {
+                //verificar qual a situação da ordem anterior, se ela ja tiver acabado ótimo, mas se ela ainda tiver em andamento, 
+                // devo verificar se ela ainda esta respeitando o end proposto 
+                //ela pode ter começado atrasada, 
+                //tenho que me basear na hora de inicio real
+                //se a hora de termino da os anterior é maior que a de inicio, se não, recebe o horario de inicio normal
+
+                if (ordemAnterior.os_finalized == 'N' && compareBeforeAfter(ordemAnterior.end, ordemAtual.os_hora_inicial_esperada) == 0) {
+                    return ordemAtual.os_hora_inicial_esperada
+                }
+
+                if (ordemAnterior.os_finalized == 'N' && compareBeforeAfter(ordemAnterior.end, ordemAtual.os_hora_inicial_esperada) == 1) {
+                    return addMinutesToTimeMaisUm(ordemAnterior.end)
+                }
+
+                // if (ordemAnterior.os_finalized == 'N') {
+                //     return addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final))
+                // }
+
+                if (ordemAnterior.os_finalized == 'Y') {
+                    return getCurrentTime()
+                }
+            }
         }
 
         function gerarHoraInicio(OsPorTecnicoFunction) {
-            // const tecnicoOrdens = OsPorTecnicoFunction.find(item => item.idTecnico === ordem.os_usuario);
-            // const ordemAtual = tecnicoOrdens.ordens.find(item => item.os_usuario == ordem.os_usuario);
 
-            // console.log('nova função', ordemAtual)
-
-            // if (ordemAtual && ordemAtual.start) {
-            //     const horaInicioImutavel = new Date(ordemAtual.start);
-            //     const horaAtual = new Date();
-
-            //     if (horaInicioImutavel < horaAtual) {
-            //         const horaFinalImutavel = new Date(ordemAtual.end);
-            //         const diff = Math.floor((horaAtual - horaInicioImutavel) / (1000 * 60)); // Diferença em minutos
-            //         const novaHoraInicio = new Date(horaAtual.getTime() + diff * 60000); // Adiciona a diferença à hora atual
-
-            //         // Atualiza a hora de início da ordem com a nova hora calculada
-            //         ordem.start = novaHoraInicio;
-            //         ordem.end = new Date(novaHoraInicio.getTime() + (horaFinalImutavel - horaInicioImutavel));
-
-            //         // Atualiza a propriedade "started" para true, indicando que a ordem foi iniciada
-            //         ordem.started = true;
-            //     }
-            // }
-
-            // return ordem.start;
 
             OsPorTecnicoFunction.forEach(tecnico => {
                 const ordensDoTecnico = tecnico.ordens;
                 let OrdemAtualOuAnterior = true
 
                 // Ordenar as ordens pelo horário de início imutável (horaInicialEsperada)
-                ordensDoTecnico.sort((a, b) => a.os_hora_inicial_esperada - b.os_hora_inicial_esperada);
+                ordensDoTecnico.sort((a, b) => Date.parse(a.os_hora_inicial_esperada) - Date.parse(b.os_hora_inicial_esperada));
+
 
                 for (let i = 0; i < ordensDoTecnico.length; i++) {
                     const ordem = ordensDoTecnico[i];
@@ -585,15 +594,30 @@ function minhaFuncao($conn)
                             ordem.start = i > 0 ? verifyOrdemAnterior(ordem, ordemAnterior, 1) : getCurrentTime();
                             ordem.end = addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
                         }
-                        
-                        if (compareCurrentTime(ordemAnterior.os_hora_inicial_esperada) == 1 && ordemAnterior.os_started == true) {
-                            ordem.start = ordemAnterior.os_hora_inicio
-                            ordem.end = addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final))
+
+                        if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 1 && ordem.os_started == true) {
+                            //isto só significa que a os esta atrasada e o tecnico não iniciou a ordem
+                            ordem.start = i > 0 ? verifyOrdemAnterior(ordem, ordemAnterior, 1) : getCurrentTime();
+                            ordem.end = addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
+                        }
+                        //necessario colocar uma condição true aqui  
+
+                        if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 0 && ordem.os_started == false) {
+                            //isto só significa que a os esta atrasada e o tecnico não iniciou a ordem
+                            ordem.start = i > 0 ? verifyOrdemAnterior(ordem, ordemAnterior, 1) : getCurrentTime();
+                            ordem.end = addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
                         }
 
-                        if (ordemAnterior.os_started == true && compareCurrentTime(ordemAnterior.end) == 1 && ordemAnterior.finalized == false) {
-                            ordemAnterior.end = addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final))
-                        }
+                         
+
+                        // if (compareCurrentTime(ordemAnterior.os_hora_inicial_esperada) == 1 && ordemAnterior.os_started == true) {
+                        //     ordem.start = ordemAnterior.os_hora_inicio
+                        //     ordem.end = addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final))
+                        // }
+
+                        // if (ordemAnterior.os_started == true && compareCurrentTime(ordemAnterior.end) == 1 && ordemAnterior.finalized == false) {
+                        //     ordemAnterior.end = addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final))
+                        // }
                     }
 
                     // Primeira ordem do técnico
@@ -608,7 +632,19 @@ function minhaFuncao($conn)
 
                         if (compareCurrentTime(ordemAnterior.os_hora_inicial_esperada) == 1 && ordemAnterior.os_started == true) {
                             ordemAnterior.start = ordemAnterior.os_hora_inicio
-                            ordemAnterior.end = addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final))
+                            ordemAnterior.end = verifyFinalHour(addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final)), ordemAnterior) ? getCurrentTime() : addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final));
+
+                            // o end é 60 minutos se ela ainda n tiver sifo finalizada e o horario atual seja maior que 
+                            // o horario de termino, se ela não tiver sido finalizada e o end esperado ja for menor que a 
+                            // hora atual significa que esta em atraso para terminarm, sendo assim setar o end com a hora atual 
+                        }
+
+                        if (compareCurrentTime(ordemAnterior.os_hora_inicial_esperada) == 1 && ordemAnterior.os_started == true && ordemAnterior.os_finalized == 'Y') {
+                            ordemAnterior.start = ordemAnterior.os_hora_inicio
+                            ordemAnterior.end = ordemAnterior.os_hora_final
+                            // o end é 60 minutos se ela ainda n tiver sifo finalizada e o horario atual seja maior que 
+                            // o horario de termino, se ela não tiver sido finalizada e o end esperado ja for menor que a 
+                            // hora atual significa que esta em atraso para terminarm, sendo assim setar o end com a hora atual 
                         }
 
                         if (ordemAnterior.os_started == true && compareCurrentTime(ordemAnterior.end) == 1 && ordemAnterior.finalized == false) {
@@ -628,7 +664,7 @@ function minhaFuncao($conn)
             console.log(OsPorTecnicoFunction)
             const listaSimples = Object.values(OsPorTecnicoFunction).flatMap(item => item.ordens);
 
-            console.log('madureira',listaSimples);
+            console.log('madureira', listaSimples);
             return listaSimples
         }
 
@@ -660,10 +696,45 @@ function minhaFuncao($conn)
             if (currentTime > comparisonTime) {
                 return 1;
             } else if (currentTime < comparisonTime) {
-                return -1;
-            } else {
                 return 0;
+            } else {
+                return 2;
             }
+        }
+
+        function compareBeforeAfter(timeBefore, timeAfter) {
+            let timeBeforeVar = new Date(timeBefore)
+            let timeAfterVar = new Date(timeAfter)
+
+            if (timeBeforeVar > timeAfterVar) {
+                return 1;
+            } else if (timeBeforeVar < timeAfterVar) {
+                return 0
+            }
+        }
+
+        function verifyFinalHour(ProvavelHoraFinal, ordem) {
+            var currentTime = new Date();
+            let HoraFinal = new Date(ProvavelHoraFinal)
+
+            if (currentTime > HoraFinal && ordem.os_finalized == 'N') {
+                return 1
+            }
+
+            if (currentTime < HoraFinal && ordem.os_finalized == 'N') {
+                return 0
+            }
+        }
+
+        function addMinutesToTimeMaisUm(date) {
+            // Cria uma cópia do objeto Date para evitar modificação indesejada
+            const newDate = new Date(date.getTime());
+
+            // Adiciona 1 minuto ao objeto Date
+            newDate.setMinutes(newDate.getMinutes() + 1);
+
+            // Retorna o novo objeto Date com 1 minuto a mais
+            return newDate;
         }
 
         var $sked1 = $('#sked1').skedTape({
