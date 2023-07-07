@@ -493,7 +493,7 @@ function minhaFuncao($conn)
             return currentDate;
         }
 
-        function addMinutesToTime(initialTime, minutesToAdd, status) {
+        function addMinutesToTime(initialTime, minutesToAdd, status, ordem) {
             var updatedTime = new Date(initialTime);
             updatedTime.setMinutes(updatedTime.getMinutes() + minutesToAdd);
 
@@ -507,6 +507,18 @@ function minhaFuncao($conn)
                 var updatedTime = new Date()
                 let minutes = minutesToAdd + 1
                 updatedTime.setMinutes(updatedTime.getMinutes() + minutes);
+
+            }
+
+            if (status === 'Em atendimento' && ordem.os_finalized == 'N') {
+        //    implementar logica de uma segunda os que ja acabou   
+                updatedTime = getCurrentTime()
+
+            }
+
+            if (status === 'Em atendimento' && ordem.os_finalized == 'Y') {
+        //    implementar logica de uma segunda os que ja acabou  (temporario, colocar o status correto de finalizado) 
+                updatedTime = ordem.os_hora_final
 
             }
             return updatedTime
@@ -566,14 +578,28 @@ function minhaFuncao($conn)
                 //     return addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final))
                 // }
 
-                if (ordemAnterior.os_finalized == 'Y') {
+                if (ordemAnterior.os_finalized == 'Y' && ordemAtual.os_hora_inicio) {
+                    //se ele ja finalizou tenho que verificar se a ordem anterior finalizou depois da hora inicial esperada
+                    //da ordem atual
+                    // mas se é o caso e ela ja começou, que hora a ordem atual começou, neste caso independe da anterior né? 
+                    //  
+                   
+                    return ordemAtual.os_hora_inicio
+                }
+
+                if (ordemAnterior.os_finalized == 'Y' && !ordemAtual.os_hora_inicio) {
+                    //se ele ja finalizou tenho que verificar se a ordem anterior finalizou depois da hora inicial esperada
+                    //da ordem atual
+                    // mas se é o caso e ela ja começou, que hora a ordem atual começou, neste caso independe da anterior né? 
+                    //  
+                   
                     return getCurrentTime()
                 }
             }
         }
 
         function gerarHoraInicio(OsPorTecnicoFunction) {
-
+            const teste = OsPorTecnicoFunction
 
             OsPorTecnicoFunction.forEach(tecnico => {
                 const ordensDoTecnico = tecnico.ordens;
@@ -598,7 +624,7 @@ function minhaFuncao($conn)
                         if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 1 && ordem.os_started == true) {
                             //isto só significa que a os esta atrasada e o tecnico não iniciou a ordem
                             ordem.start = i > 0 ? verifyOrdemAnterior(ordem, ordemAnterior, 1) : getCurrentTime();
-                            ordem.end = addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
+                            ordem.end = addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final), ordem.os_status_nome, ordem)
                         }
                         //necessario colocar uma condição true aqui  
 
