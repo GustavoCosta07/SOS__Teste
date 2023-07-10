@@ -4,7 +4,6 @@
  * Author: Alexander Korostin <lexkrstn@gmail.com>
  */
 
-
 (function (factory) {
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as an anonymous module.
@@ -718,46 +717,8 @@
 		},
 		renderEvent: function (event) {
 			// Create event node
-			console.log('opa')
 			if (event.teste == "gustavo") {
-
-				console.log('hshshshs', event)
-
-				const event_id = event.id; // exemplo
-				const event_start = event.start; // exemplo
-				const event_idTecnico = event.userData[event.location - 1].idTecnico
-				// Montar o objeto de dados a ser enviado no corpo da requisição
-				const data = {
-					event_id: event_id,
-					event_start: event_start,
-					event_idTecnico: event_idTecnico
-				};
-				console.log('data', data)
-
-				fetch('teste.php', {
-					method: 'POST', // ou 'PUT'
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify(data)
-				})
-					.then(function (response) {
-						if (response.ok) {
-							return response.text();
-						} else {
-							throw new Error('Erro na requisição: ' + response.status);
-						}
-					})
-					.then(function (data) {
-						// Tratar a resposta do PHP, se necessário
-						console.log(data);
-					})
-					.catch(function (error) {
-						// Tratar qualquer erro ocorrido durante a requisição
-						console.log('Erro: ' + error.message);
-					});
-
-					alert(`O.S Direcionada para o técnico ${event.userData[event.location - 1].name}`)
+				direcionar(event)
 			}
 
 			if (event.url && !event.disabled) {
@@ -809,7 +770,6 @@
 			this.postRenderEvent($event, event);
 			// pegar a ultima posição e fazer testes se realmente vai sempre referenciar a ultima
 			// document.getElementById(selectedId).classList.remove('highlight-card');
-
 			// console.log('opa', $event)
 			return $event;
 		},
@@ -1484,14 +1444,43 @@
 
 
 
-// function teste(params) {
-// 	const teste = `UPDATE os
-// 	SET os_status = '1',
-// 		direcionado = 'Y',
-// 		os_hora_inicio = ${event.start}
-// 	WHERE os_id = ${event.id};
-	
-// 	`
+function direcionar(event) {
+	console.log('hshshshs', event)
+	alert(event.id)
+	// const event_id = event.id; // exemplo
+	// const event_start = event.start; // exemplo
+	// const event_idTecnico = event.userData[event.location - 1].idTecnico
+	// // Montar o objeto de dados a ser enviado no corpo da requisição
+	// const data = {
+	// 	event_id: event_id,
+	// 	event_start: event_start,
+	// 	event_idTecnico: event_idTecnico
+	// };
+	// console.log('data', data)
 
+	// fetch('teste.php', {
+	// 	method: 'POST', // ou 'PUT'
+	// 	headers: {
+	// 		'Content-Type': 'application/json'
+	// 	},
+	// 	body: JSON.stringify(data)
+	// })
+	// 	.then(function (response) {
+	// 		if (response.ok) {
+	// 			return response.text();
+	// 		} else {
+	// 			throw new Error('Erro na requisição: ' + response.status);
+	// 		}
+	// 	})
+	// 	.then(function (data) {
+	// 		// Tratar a resposta do PHP, se necessário
+	// 		console.log(data);
+	// 	})
+	// 	.catch(function (error) {
+	// 		// Tratar qualquer erro ocorrido durante a requisição
+	// 		console.log('Erro: ' + error.message);
+	// 	});
 
-// }
+	// alert(`O.S Direcionada para o técnico ${event.userData[event.location - 1].name}`)
+
+}

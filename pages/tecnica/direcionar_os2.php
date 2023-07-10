@@ -198,8 +198,10 @@ function minhaFuncao($conn)
 
         }
 
-        .deslocamento-event {
-            background-color: blue;
+        .deslocamento {
+            background-color: #CFD8DC;
+            border: #CFD8DC;
+            pointer-events: none;
             /* height: 30px; */
         }
 
@@ -208,7 +210,20 @@ function minhaFuncao($conn)
         }
 
         .atendimento {
-            background-color: yellow;
+            background-color: #E4771F;
+            pointer-events: none;
+            border: #E4771F;
+            /* height: 30px; */
+        }
+
+        .direcionado {
+            background-color: #105BFB;
+            border: #105BFB;
+            
+        }
+
+        .aviso {
+            background-color: #FF1493;
         }
 
         .servico {
@@ -511,13 +526,13 @@ function minhaFuncao($conn)
             }
 
             if (status === 'Em atendimento' && ordem.os_finalized == 'N') {
-        //    implementar logica de uma segunda os que ja acabou   
+                //    implementar logica de uma segunda os que ja acabou   
                 updatedTime = getCurrentTime()
 
             }
 
             if (status === 'Em atendimento' && ordem.os_finalized == 'Y') {
-        //    implementar logica de uma segunda os que ja acabou  (temporario, colocar o status correto de finalizado) 
+                //    implementar logica de uma segunda os que ja acabou  (temporario, colocar o status correto de finalizado) 
                 updatedTime = ordem.os_hora_final
 
             }
@@ -583,7 +598,7 @@ function minhaFuncao($conn)
                     //da ordem atual
                     // mas se é o caso e ela ja começou, que hora a ordem atual começou, neste caso independe da anterior né? 
                     //  
-                   
+
                     return ordemAtual.os_hora_inicio
                 }
 
@@ -592,7 +607,7 @@ function minhaFuncao($conn)
                     //da ordem atual
                     // mas se é o caso e ela ja começou, que hora a ordem atual começou, neste caso independe da anterior né? 
                     //  
-                   
+
                     return getCurrentTime()
                 }
             }
@@ -634,7 +649,7 @@ function minhaFuncao($conn)
                             ordem.end = addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
                         }
 
-                         
+
 
                         // if (compareCurrentTime(ordemAnterior.os_hora_inicial_esperada) == 1 && ordemAnterior.os_started == true) {
                         //     ordem.start = ordemAnterior.os_hora_inicio
@@ -676,27 +691,23 @@ function minhaFuncao($conn)
                         if (ordemAnterior.os_started == true && compareCurrentTime(ordemAnterior.end) == 1 && ordemAnterior.finalized == false) {
                             ordemAnterior.end = addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final))
                         }
+
+                        if (ordemAnterior.os_started == false && compareCurrentTime(ordemAnterior.os_hora_inicial_esperada) == 0) {
+                            //não começou 
+                            //não esta em atraso 
+                            ordemAnterior.start = ordemAnterior.os_hora_inicial_esperada
+                            ordemAnterior.end = addMinutesToTime(ordemAnterior.os_hora_inicial_esperada, parseInt(ordemAnterior.os_previsao_hora_final))
+                        }
                         OrdemAtualOuAnterior = false
                     }
-
-
-
-
-
-
 
                 }
             });
             console.log(OsPorTecnicoFunction)
             const listaSimples = Object.values(OsPorTecnicoFunction).flatMap(item => item.ordens);
 
-            console.log('madureira', listaSimples);
             return listaSimples
         }
-
-
-
-
 
         function today(hours, minutes) {
             var date = new Date();
@@ -819,14 +830,11 @@ function minhaFuncao($conn)
                         name: 'New meeting ' + selectedId,
                         id: selectedId,
                         start: startTime,
-                        // active: true,
                         duration: 60 * 90 * 1000, //1h e meia
                         started: false,
                         className: 'deslocamento-event',
-                        // disabled: true
                         userData: locations2,
                         teste: 'gustavo',
-                        locations: 'locations2'
                     });
                     document.getElementById(selectedId).classList.remove('highlight-card');
                     selectedId = null;
@@ -859,6 +867,15 @@ function minhaFuncao($conn)
                     const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
                     processedOrder.location = technician.id;
                     processedOrder.os_started = (processedOrder.os_status_nome === 'Em atendimento') ? true : (order.os_status_nome === 'Direcionado') ? false : false;
+                    const statusToClassNameMap = {
+                        'Em atendimento': 'atendimento',
+                        'Direcionado': 'direcionado',
+                        'Cancelado': 'cancelado',
+                        'Concluido': 'concluido',
+                        'Orçamento': 'orcamento'
+                    };
+
+                    processedOrder.className = statusToClassNameMap[processedOrder.os_status_nome] || 'aviso';
 
                     if (technician) {
                         const tecnicoIndex = OsPorTecnico.findIndex(item => item.idTecnico === technician.idTecnico);
@@ -881,44 +898,10 @@ function minhaFuncao($conn)
                     return processedOrder;
                 });
                 const teste = gerarHoraInicio(OsPorTecnico)
-                // Processar as ordens de serviço para adicionar chaves e valores
-                const processedData = filteredData.map(order => {
-                    let processedOrder = {
-                        ...order
-                    };
-                    const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
-                    processedOrder.location = technician.id;
-
-                    if (order.os_status_nome === 'Em atendimento') {
-                        processedOrder.className = 'atendimento';
-                        processedOrder.started = true;
-                        processedOrder.name = processedOrder.os_consideracoes;
-                        processedOrder.start = processedOrder.os_hora_inicio, //aqui devo chamar uma função e passar a order
-                            // dentro da função verificar de qual order deste tecnico se refere 
-                            // na função deve-se ter acesso a lista de os dividida por tecnico
-                            // a função vai iterar por todas as os do tecnico e verificar a hora de inicio imutavel 
-                            // a os com a hora de inicio imutavel é a primeira 
-                            // dentro desta verificação eu devo verificar a situação das outras os, 
-                            // se ela for a segunda da lista, devo verificar qual situação esta a anterior a ela 
-                            processedOrder.end = addMinutesToTime(processedOrder.os_hora_inicio, parseInt(processedOrder.os_previsao_hora_final)),
-                            processedOrder.started = true
-                        // processedOrder.disabled = true
-                        // processedOrder.active = false
-                    } else if (order.os_status_nome === 'Direcionado') {
-                        processedOrder.className = 'aguardandoAtendimento';
-                        processedOrder.started = false;
-                        processedOrder.name = processedOrder.os_consideracoes;
-                        processedOrder.start = processedOrder.os_hora_inicio,
-                            processedOrder.end = addMinutesToTime(processedOrder.os_hora_inicio, parseInt(processedOrder.os_previsao_hora_final), processedOrder.os_status_nome),
-                            processedOrder.started = false
-
-                    }
-
-                    return processedOrder;
-                });
+                
 
                 // Retornar apenas o item que teve os novos atributos adicionados
-                const filteredProcessedData = processedData.filter(order => 'className' in order && 'started' in order);
+                // const filteredProcessedData = processedData.filter(order => 'className' in order && 'started' in order);
 
                 return teste;
             }
