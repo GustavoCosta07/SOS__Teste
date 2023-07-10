@@ -23,7 +23,7 @@
     $sql = "UPDATE os
             SET os_status = '2',
                 direcionado = 'Y',
-                os_hora_inicio = '$event_start',
+                os_hora_inicial_esperada = '$event_start',
                 os_usuario = '$event_idTecnico'
             WHERE os_id = '$event_id'";
 

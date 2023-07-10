@@ -1,13 +1,11 @@
-USE sos_teste;
-
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Tempo de geração: 06/06/2023 às 14:27
--- Versão do servidor: 5.7.41
--- Versão do PHP: 8.1.16
+-- Host: mysql
+-- Tempo de geração: 10/07/2023 às 14:41
+-- Versão do servidor: 8.0.33
+-- Versão do PHP: 8.1.17
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Banco de dados: `grupofmvapp_sistema`
+-- Banco de dados: `sos_teste`
 --
 
 -- --------------------------------------------------------
@@ -30,9 +28,9 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `anotacoes_clientes` (
-  `anotacoes_clientes_id` int(11) NOT NULL,
-  `anotacoes_clientes_id_cliente` int(11) NOT NULL,
-  `anotacoes_equipamentos` int(11) DEFAULT NULL,
+  `anotacoes_clientes_id` int NOT NULL,
+  `anotacoes_clientes_id_cliente` int NOT NULL,
+  `anotacoes_equipamentos` int DEFAULT NULL,
   `anotacoes_data` date DEFAULT NULL,
   `anotacoes_data_troca` date DEFAULT NULL,
   `anotacoes_oleo` varchar(255) DEFAULT NULL,
@@ -41,8 +39,8 @@ CREATE TABLE `anotacoes_clientes` (
   `anotacao_validade_oleo` date NOT NULL,
   `anotacao_validade_bateria` date NOT NULL,
   `anotacao_validade_art` date NOT NULL,
-  `anotacoes_lixeira` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `anotacoes_lixeira` int NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `anotacoes_clientes`
@@ -748,13 +746,13 @@ INSERT INTO `anotacoes_clientes` (`anotacoes_clientes_id`, `anotacoes_clientes_i
 --
 
 CREATE TABLE `atendimentos` (
-  `atendimento_id` int(11) NOT NULL,
-  `atendimento_chamado` int(11) DEFAULT NULL,
-  `atendimento_tecnico` int(11) DEFAULT NULL,
+  `atendimento_id` int NOT NULL,
+  `atendimento_chamado` int DEFAULT NULL,
+  `atendimento_tecnico` int DEFAULT NULL,
   `atendimento_inicio` datetime DEFAULT CURRENT_TIMESTAMP,
   `atendimento_fim` datetime DEFAULT NULL,
-  `atendimento_status` int(11) DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `atendimento_status` int DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `atendimentos`
@@ -773,14 +771,14 @@ INSERT INTO `atendimentos` (`atendimento_id`, `atendimento_chamado`, `atendiment
 --
 
 CREATE TABLE `atualizacao_tarefas` (
-  `id_at_tarefa` int(11) NOT NULL,
-  `atualizacao_tarefa` int(11) NOT NULL,
+  `id_at_tarefa` int NOT NULL,
+  `atualizacao_tarefa` int NOT NULL,
   `atualizacao_atualizacao` varchar(500) NOT NULL,
-  `atualizacao_quem` int(11) NOT NULL,
-  `atualizacao_empresa` int(11) NOT NULL,
+  `atualizacao_quem` int NOT NULL,
+  `atualizacao_empresa` int NOT NULL,
   `atualizacao_data` datetime NOT NULL,
-  `atualizacao_status` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `atualizacao_status` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `atualizacao_tarefas`
@@ -818,16 +816,16 @@ INSERT INTO `atualizacao_tarefas` (`id_at_tarefa`, `atualizacao_tarefa`, `atuali
 --
 
 CREATE TABLE `chamados` (
-  `chamado_id` int(11) NOT NULL,
-  `chamado_os` int(11) NOT NULL,
-  `chamado_tecnico` int(11) NOT NULL,
+  `chamado_id` int NOT NULL,
+  `chamado_os` int NOT NULL,
+  `chamado_tecnico` int NOT NULL,
   `chamado_data_aberto` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `chamado_data_os` datetime NOT NULL,
-  `chamado_cliente` int(11) NOT NULL,
-  `chamado_usuario` int(11) NOT NULL,
+  `chamado_cliente` int NOT NULL,
+  `chamado_usuario` int NOT NULL,
   `chamado_observacoes` longtext NOT NULL,
-  `chamado_status` int(11) NOT NULL DEFAULT '2'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `chamado_status` int NOT NULL DEFAULT '2'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `chamados`
@@ -847,7 +845,7 @@ INSERT INTO `chamados` (`chamado_id`, `chamado_os`, `chamado_tecnico`, `chamado_
 --
 
 CREATE TABLE `clientes` (
-  `cliente_id` int(11) NOT NULL,
+  `cliente_id` int NOT NULL,
   `cliente_razao` varchar(255) DEFAULT NULL,
   `cliente_cpf` varchar(20) DEFAULT NULL,
   `cliente_fantasia` varchar(255) DEFAULT NULL,
@@ -873,11 +871,11 @@ CREATE TABLE `clientes` (
   `cliente_cidade` varchar(100) DEFAULT NULL,
   `cliente_observacoes` longtext,
   `cliente_cadastro` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `cliente_empresa` int(11) NOT NULL DEFAULT '1',
-  `cliente_quem` int(11) DEFAULT NULL,
-  `cliente_lixeira` int(11) DEFAULT '1',
-  `cliente_status` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `cliente_empresa` int NOT NULL DEFAULT '1',
+  `cliente_quem` int DEFAULT NULL,
+  `cliente_lixeira` int DEFAULT '1',
+  `cliente_status` int NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `clientes`
@@ -1391,20 +1389,20 @@ INSERT INTO `clientes` (`cliente_id`, `cliente_razao`, `cliente_cpf`, `cliente_f
 --
 
 CREATE TABLE `contas_areceber` (
-  `conta_areceber_id` int(11) NOT NULL,
-  `conta_areceber_cliente` int(11) DEFAULT NULL,
-  `conta_areceber_parcela` int(11) DEFAULT NULL,
-  `conta_areceber_parcelas` int(11) DEFAULT NULL,
+  `conta_areceber_id` int NOT NULL,
+  `conta_areceber_cliente` int DEFAULT NULL,
+  `conta_areceber_parcela` int DEFAULT NULL,
+  `conta_areceber_parcelas` int DEFAULT NULL,
   `conta_areceber_valor_total` decimal(10,2) DEFAULT NULL,
   `conta_areceber_valor_parcela` decimal(10,2) DEFAULT NULL,
   `conta_areceber_vencimento` date DEFAULT NULL,
   `conta_areceber_cadastro` date DEFAULT NULL,
   `conta_areceber_referente` varchar(255) DEFAULT NULL,
-  `conta_areceber_quem` int(11) NOT NULL,
-  `conta_areceber_empresa` int(11) NOT NULL,
+  `conta_areceber_quem` int NOT NULL,
+  `conta_areceber_empresa` int NOT NULL,
   `conta_areceber_observacoes` varchar(255) NOT NULL,
-  `conta_areceber_status` int(11) DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `conta_areceber_status` int DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1413,22 +1411,22 @@ CREATE TABLE `contas_areceber` (
 --
 
 CREATE TABLE `contas_pagar` (
-  `conta_pagar_id` int(11) NOT NULL,
-  `conta_pagar_fornecedor` int(11) DEFAULT NULL,
-  `conta_pagar_coloborador` int(11) DEFAULT NULL,
+  `conta_pagar_id` int NOT NULL,
+  `conta_pagar_fornecedor` int DEFAULT NULL,
+  `conta_pagar_coloborador` int DEFAULT NULL,
   `conta_pagar_tipo` varchar(255) DEFAULT NULL,
-  `conta_pagar_parcela` int(11) DEFAULT NULL,
-  `conta_pagar_parcelas` int(11) DEFAULT NULL,
+  `conta_pagar_parcela` int DEFAULT NULL,
+  `conta_pagar_parcelas` int DEFAULT NULL,
   `conta_pagar_valor_total` decimal(10,2) DEFAULT NULL,
   `conta_pagar_valor_parcela` decimal(10,2) DEFAULT NULL,
   `conta_pagar_vencimento` date DEFAULT NULL,
   `conta_pagar_cadastro` date DEFAULT NULL,
   `conta_pagar_referente` varchar(255) DEFAULT NULL,
-  `conta_pagar_quem` int(11) DEFAULT NULL,
-  `conta_pagar_empresa` int(11) DEFAULT NULL,
+  `conta_pagar_quem` int DEFAULT NULL,
+  `conta_pagar_empresa` int DEFAULT NULL,
   `conta_pagar_observacoes` varchar(255) DEFAULT NULL,
-  `conta_pagar_status` int(11) DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `conta_pagar_status` int DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1437,7 +1435,7 @@ CREATE TABLE `contas_pagar` (
 --
 
 CREATE TABLE `empresas` (
-  `empresa_id` int(11) NOT NULL,
+  `empresa_id` int NOT NULL,
   `empresa_razaosocial` varchar(255) NOT NULL,
   `empresa_fantasia` varchar(255) NOT NULL,
   `empresa_cnpj` varchar(20) NOT NULL,
@@ -1452,8 +1450,8 @@ CREATE TABLE `empresas` (
   `empresa_senha` varchar(100) NOT NULL,
   `empresa_email` varchar(100) NOT NULL,
   `empresa_cadastro` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `empresa_status` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `empresa_status` int NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1462,17 +1460,17 @@ CREATE TABLE `empresas` (
 --
 
 CREATE TABLE `equipamentos` (
-  `equipamento_id` int(11) NOT NULL,
-  `equipamento_id_cliente` int(11) DEFAULT NULL,
+  `equipamento_id` int NOT NULL,
+  `equipamento_id_cliente` int DEFAULT NULL,
   `equipamento_nome` varchar(255) DEFAULT NULL,
   `equipamento_modelo` varchar(255) DEFAULT NULL,
   `equipamentos_paradas` varchar(255) DEFAULT NULL,
   `equipamentos_porta` varchar(255) DEFAULT NULL,
-  `equipamento_id_marca` int(11) DEFAULT NULL,
-  `equipamentos_emp` int(11) NOT NULL DEFAULT '1',
-  `equipamento_status` int(11) NOT NULL DEFAULT '1',
-  `equipamento_lixeira` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `equipamento_id_marca` int DEFAULT NULL,
+  `equipamentos_emp` int NOT NULL DEFAULT '1',
+  `equipamento_status` int NOT NULL DEFAULT '1',
+  `equipamento_lixeira` int NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `equipamentos`
@@ -2207,12 +2205,12 @@ INSERT INTO `equipamentos` (`equipamento_id`, `equipamento_id_cliente`, `equipam
 --
 
 CREATE TABLE `etiquetas` (
-  `etiqueta_id` int(11) NOT NULL,
+  `etiqueta_id` int NOT NULL,
   `etiqueta_nome` varchar(255) DEFAULT NULL,
   `etiqueta_cor` varchar(255) DEFAULT NULL,
-  `etiqueta_quem` int(11) DEFAULT NULL,
-  `etiqueta_emp` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `etiqueta_quem` int DEFAULT NULL,
+  `etiqueta_emp` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `etiquetas`
@@ -2228,17 +2226,17 @@ INSERT INTO `etiquetas` (`etiqueta_id`, `etiqueta_nome`, `etiqueta_cor`, `etique
 --
 
 CREATE TABLE `fluxo_caixa` (
-  `fluxo_caixa_id` int(11) NOT NULL,
+  `fluxo_caixa_id` int NOT NULL,
   `fluxo_caixa_valor` decimal(10,2) DEFAULT NULL,
   `fluxo_caixa_data` varchar(255) DEFAULT NULL,
   `fluxo_caixa_cliente` varchar(255) DEFAULT NULL,
   `fluxo_caixa_colaboradores` varchar(255) DEFAULT NULL,
   `fluxo_caixa_procedimento` varchar(255) DEFAULT NULL,
   `fluxo_caixa_forma_pagamento` varchar(255) DEFAULT NULL,
-  `fluxo_caixa_quem` int(11) DEFAULT NULL,
-  `fluxo_caixa_emp` int(11) DEFAULT NULL,
-  `fluxo_caixa_lixeira` int(11) DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `fluxo_caixa_quem` int DEFAULT NULL,
+  `fluxo_caixa_emp` int DEFAULT NULL,
+  `fluxo_caixa_lixeira` int DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `fluxo_caixa`
@@ -2256,7 +2254,7 @@ INSERT INTO `fluxo_caixa` (`fluxo_caixa_id`, `fluxo_caixa_valor`, `fluxo_caixa_d
 --
 
 CREATE TABLE `fornecedores` (
-  `fornecedor_id` int(11) NOT NULL,
+  `fornecedor_id` int NOT NULL,
   `fornecedor_nome` varchar(255) DEFAULT NULL,
   `fornecedor_cpf` varchar(20) DEFAULT NULL,
   `fornecedor_telefone` varchar(100) DEFAULT NULL,
@@ -2268,12 +2266,12 @@ CREATE TABLE `fornecedores` (
   `fornecedor_complemento` varchar(100) DEFAULT NULL,
   `fornecedor_estado` varchar(20) DEFAULT NULL,
   `fornecedor_pais` varchar(40) DEFAULT NULL,
-  `fornecedor_quem` int(11) DEFAULT NULL,
-  `fornecedor_emp` int(11) DEFAULT NULL,
+  `fornecedor_quem` int DEFAULT NULL,
+  `fornecedor_emp` int DEFAULT NULL,
   `fornecedor_observacoes` longtext,
   `fornecedor_ie` varchar(255) DEFAULT NULL,
-  `fornecedor_lixeira` int(11) DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `fornecedor_lixeira` int DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `fornecedores`
@@ -2337,7 +2335,8 @@ INSERT INTO `fornecedores` (`fornecedor_id`, `fornecedor_nome`, `fornecedor_cpf`
 (66, 'ESTRELA MATERIAIS ELÉTRICOS LTDA', '05.508.756/0001-60', '(31) 99521 - 1507', '', '30730-500', '917', 'Padre Eustáquio', 'Belo Horizonte', '', 'MG', 'Brasil', 12, 1, '', '', 1),
 (67, 'CLLOVI INDUSTRIA E COMERCIO DE EQUIPAMENTOS PARA ELEVADORES', '55.116.495/0001-00', '(11) 2521 - 7133', '', '08290-120', '125', 'Vila Carmosina', 'São Paulo', '', 'SP', 'Brasil', 12, 1, '', '', 1),
 (68, 'ELEVCOM IND. E COM. DE PECAS E ACES. PARA ELEV. LTDA', '04.826.712/0001-15', '(11) 2796 - 3511', '', '07600-000', 'SN', 'TERRA PRETA', 'MARIPORA', '', 'SP', 'Brasil', 12, 1, '', '', 1),
-(69, 'SHILTEM', '09.333.849/0001-51', '(11) 5058-1922', '', '04326-060', '220', 'Vila Fachini', 'São Paulo', '', 'SP', 'Brasil', 12, 1, '', '', 1);
+(69, 'SHILTEM', '09.333.849/0001-51', '(11) 5058-1922', '', '04326-060', '220', 'Vila Fachini', 'São Paulo', '', 'SP', 'Brasil', 12, 1, '', '', 1),
+(70, 'nome', '96532658988', '1234567890', 'example@example.com', 'cep', 'numero', 'bairro', 'cidade', 'complemento', 'estado', 'Brasil', 1, 1, 'observacoes', 'ie', 1);
 
 -- --------------------------------------------------------
 
@@ -2346,11 +2345,11 @@ INSERT INTO `fornecedores` (`fornecedor_id`, `fornecedor_nome`, `fornecedor_cpf`
 --
 
 CREATE TABLE `fotos` (
-  `foto_id` int(11) NOT NULL,
+  `foto_id` int NOT NULL,
   `original_image` varchar(255) DEFAULT NULL,
   `thumbnail_image` varchar(255) DEFAULT NULL,
-  `foto_produto` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `foto_produto` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -2359,16 +2358,16 @@ CREATE TABLE `fotos` (
 --
 
 CREATE TABLE `interacoes_os` (
-  `interacao_id` int(11) NOT NULL,
-  `interacao_os` int(11) DEFAULT NULL,
-  `interacao_chamado` int(11) DEFAULT NULL,
-  `interacao_status1` int(11) DEFAULT NULL,
-  `interacao_status2` int(11) DEFAULT NULL,
-  `interacao_usuario` int(11) DEFAULT NULL,
+  `interacao_id` int NOT NULL,
+  `interacao_os` int DEFAULT NULL,
+  `interacao_chamado` int DEFAULT NULL,
+  `interacao_status1` int DEFAULT NULL,
+  `interacao_status2` int DEFAULT NULL,
+  `interacao_usuario` int DEFAULT NULL,
   `interacao_observacoes` text,
   `interacao_data` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `interacao_equipamento` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `interacao_equipamento` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `interacoes_os`
@@ -2396,9 +2395,9 @@ INSERT INTO `interacoes_os` (`interacao_id`, `interacao_os`, `interacao_chamado`
 --
 
 CREATE TABLE `local_estoque` (
-  `id_local_estoque` int(11) NOT NULL,
+  `id_local_estoque` int NOT NULL,
   `nome_local_estoque` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `local_estoque`
@@ -2414,11 +2413,11 @@ INSERT INTO `local_estoque` (`id_local_estoque`, `nome_local_estoque`) VALUES
 --
 
 CREATE TABLE `marcas` (
-  `marca_id` int(11) NOT NULL,
+  `marca_id` int NOT NULL,
   `marca_nome` varchar(255) DEFAULT NULL,
-  `marca_emp` int(11) DEFAULT NULL,
-  `marca_lixeira` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `marca_emp` int DEFAULT NULL,
+  `marca_lixeira` int NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `marcas`
@@ -2455,13 +2454,13 @@ INSERT INTO `marcas` (`marca_id`, `marca_nome`, `marca_emp`, `marca_lixeira`) VA
 --
 
 CREATE TABLE `modelos` (
-  `modelo_id` int(11) NOT NULL,
+  `modelo_id` int NOT NULL,
   `modelo_nome` varchar(255) DEFAULT NULL,
-  `modelo_marca` int(11) NOT NULL,
+  `modelo_marca` int NOT NULL,
   `modelo_oleo` varchar(10) NOT NULL,
   `modelo_bateria` varchar(10) NOT NULL,
-  `modelo_lixeira` int(11) NOT NULL DEFAULT '1'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `modelo_lixeira` int NOT NULL DEFAULT '1'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 
 --
 -- Despejando dados para a tabela `modelos`
@@ -2531,16 +2530,16 @@ INSERT INTO `modelos` (`modelo_id`, `modelo_nome`, `modelo_marca`, `modelo_oleo`
 --
 
 CREATE TABLE `orcamentos` (
-  `orcamento_id` int(11) NOT NULL,
-  `orcamento_equipamento` int(11) NOT NULL,
-  `orcamento_tecnico` int(11) NOT NULL,
+  `orcamento_id` int NOT NULL,
+  `orcamento_equipamento` int NOT NULL,
+  `orcamento_tecnico` int NOT NULL,
   `orcamento_data_solicitado` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `orcamento_os` int(11) NOT NULL,
-  `orcamento_chamado` int(11) NOT NULL,
-  `orcamento_status` int(11) NOT NULL DEFAULT '1',
-  `orcamento_cliente` int(11) NOT NULL,
+  `orcamento_os` int NOT NULL,
+  `orcamento_chamado` int NOT NULL,
+  `orcamento_status` int NOT NULL DEFAULT '1',
+  `orcamento_cliente` int NOT NULL,
   `orcamento_observacoes` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `orcamentos`
@@ -2558,26 +2557,34 @@ INSERT INTO `orcamentos` (`orcamento_id`, `orcamento_equipamento`, `orcamento_te
 --
 
 CREATE TABLE `os` (
-  `os_id` int(11) NOT NULL,
-  `os_tipo` int(11) NOT NULL,
-  `os_cliente` int(11) NOT NULL,
-  `os_usuario` int(11) NOT NULL,
+  `os_id` int NOT NULL,
+  `os_tipo` int NOT NULL,
+  `os_cliente` int NOT NULL,
+  `os_usuario` int NOT NULL,
   `os_data_abertura` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `os_consideracoes` longtext NOT NULL,
-  `os_status` int(11) NOT NULL DEFAULT '1',
-  `os_solicitante` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `os_status` int NOT NULL DEFAULT '1',
+  `os_solicitante` varchar(255) NOT NULL,
+  `direcionado` char(1) NOT NULL DEFAULT 'N',
+  `os_hora_inicio` varchar(100) NOT NULL,
+  `os_previsao_hora_final` int NOT NULL,
+  `os_hora_inicial_esperada` varchar(500) NOT NULL,
+  `os_finalized` char(1) NOT NULL DEFAULT 'N',
+  `os_hora_final` varchar(500) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `os`
 --
 
-INSERT INTO `os` (`os_id`, `os_tipo`, `os_cliente`, `os_usuario`, `os_data_abertura`, `os_consideracoes`, `os_status`, `os_solicitante`) VALUES
-(2, 3, 110, 1, '2023-05-22 10:36:22', 'Teste Sistema', 6, 'Teste Sistema'),
-(3, 4, 110, 1, '2023-05-22 10:37:19', 'Elevador travado', 6, 'Marcelo'),
-(4, 3, 110, 1, '2023-05-22 16:52:21', 'Teste chamado ', 4, 'Marcelo'),
-(5, 4, 479, 16, '2023-05-25 12:33:50', ' Sr. Valdir informou que não é o sindico mas está preso no elevador \r\n9.9914-1414\r\n', 6, 'Valdir Teste '),
-(6, 3, 110, 1, '2023-05-30 10:17:55', 'Teste', 2, 'Marcelo');
+INSERT INTO `os` (`os_id`, `os_tipo`, `os_cliente`, `os_usuario`, `os_data_abertura`, `os_consideracoes`, `os_status`, `os_solicitante`, `direcionado`, `os_hora_inicio`, `os_previsao_hora_final`, `os_hora_inicial_esperada`, `os_finalized`, `os_hora_final`) VALUES
+(2, 3, 110, 1, '2023-05-22 10:36:22', 'Teste Sistema', 6, 'Teste Sistema', 'N', '', 0, '', 'N', ''),
+(3, 4, 110, 1, '2023-05-22 10:37:19', 'Elevador travado', 6, 'Marcelo', 'N', '', 0, '', 'N', ''),
+(4, 3, 110, 1, '2023-05-22 16:52:21', 'Teste chamado ', 4, 'Marcelo', 'N', '', 0, '', 'N', ''),
+(5, 4, 479, 19, '2023-05-25 12:33:50', ' Sr. Valdir informou que não é o sindico mas está preso no elevador \r\n9.9914-1414\r\n', 2, 'Valdir Teste ', 'N', '2023-07-10T16:35:00.000Z', 60, 'Fri Jul 07 2023 11:00:00 GMT-0300 (Horário Padrão de Brasília)', 'N', ''),
+(6, 3, 110, 1, '2023-05-30 10:17:55', 'Teste', 7, 'Marcelo', 'Y', 'Mon Jul 10 2023 08:00:43 GMT-0300 (Horário Padrão de Brasília)', 60, 'Mon Jul 10 2023 08:00:43 GMT-0300 (Horário Padrão de Brasília)', 'Y', 'Mon Jul 10 2023 09:30:43 GMT-0300 (Horário Padrão de Brasília)'),
+(32, 3, 110, 17, '2023-05-30 10:17:55', 'Teste', 2, 'Marcelo', 'Y', '', 60, 'Mon Jul 10 2023 16:00:43 GMT-0300 (Horário Padrão de Brasília)', 'N', ''),
+(33, 3, 110, 18, '2023-05-30 10:17:55', 'Teste', 2, 'Marcelo', 'Y', '', 60, 'Mon Jul 10 2023 10:00:43 GMT-0300 (Horário Padrão de Brasília)', 'N', '');
 
 -- --------------------------------------------------------
 
@@ -2586,10 +2593,10 @@ INSERT INTO `os` (`os_id`, `os_tipo`, `os_cliente`, `os_usuario`, `os_data_abert
 --
 
 CREATE TABLE `os_status` (
-  `os_status_id` int(11) NOT NULL,
+  `os_status_id` int NOT NULL,
   `os_status_nome` varchar(255) NOT NULL,
-  `os_status_status` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `os_status_status` int NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `os_status`
@@ -2611,20 +2618,27 @@ INSERT INTO `os_status` (`os_status_id`, `os_status_nome`, `os_status_status`) V
 --
 
 CREATE TABLE `os_tipos` (
-  `os_tipo_id` int(11) NOT NULL,
+  `os_tipo_id` int NOT NULL,
   `os_tipo_nome` varchar(255) NOT NULL,
-  `os_tipo_status` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `os_tipo_status` int NOT NULL DEFAULT '1',
+  `os_tipos_tempo` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `os_tipos`
 --
 
-INSERT INTO `os_tipos` (`os_tipo_id`, `os_tipo_nome`, `os_tipo_status`) VALUES
-(1, 'Chamada Técnica', 1),
-(2, 'Preventiva', 1),
-(3, 'Avançado', 1),
-(4, 'Emergência ', 1);
+INSERT INTO `os_tipos` (`os_tipo_id`, `os_tipo_nome`, `os_tipo_status`, `os_tipos_tempo`) VALUES
+(1, 'Chamada Técnica', 1, 60),
+(2, 'Preventiva', 1, 45),
+(3, 'Avançado', 1, 180),
+(4, 'Emergência ', 1, 60),
+(5, 'Acompanhamento', 5, 60),
+(6, 'Adesivacao', 6, 40),
+(7, 'Instalacao\r\n', 7, 120),
+(8, 'Corretiva', 8, 45),
+(9, 'Visita Tecnica', 9, 30),
+(10, 'Vistoria Tecnica', 10, 30);
 
 -- --------------------------------------------------------
 
@@ -2633,7 +2647,7 @@ INSERT INTO `os_tipos` (`os_tipo_id`, `os_tipo_nome`, `os_tipo_status`) VALUES
 --
 
 CREATE TABLE `produtos` (
-  `produto_id` int(11) NOT NULL,
+  `produto_id` int NOT NULL,
   `produto_nome` varchar(255) DEFAULT NULL,
   `produto_valor_compra` decimal(10,2) DEFAULT NULL,
   `produto_valor_venda` decimal(10,2) DEFAULT NULL,
@@ -2641,12 +2655,12 @@ CREATE TABLE `produtos` (
   `produto_aplicacoes` longtext,
   `produto_estoque` varchar(255) DEFAULT NULL,
   `produto_ncm` varchar(255) DEFAULT NULL,
-  `produto_tipo` int(11) DEFAULT '0',
-  `produto_local_estoque` int(11) DEFAULT '0',
+  `produto_tipo` int DEFAULT '0',
+  `produto_local_estoque` int DEFAULT '0',
   `produto_estoque_minimo` varchar(255) DEFAULT NULL,
   `produto_foto` varchar(255) DEFAULT NULL,
-  `produto_lixeira` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `produto_lixeira` int NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `produtos`
@@ -3047,11 +3061,11 @@ INSERT INTO `produtos` (`produto_id`, `produto_nome`, `produto_valor_compra`, `p
 --
 
 CREATE TABLE `produtos_aplicacoes` (
-  `produto_ap_id` int(11) NOT NULL,
-  `produto_ap_produto` int(11) DEFAULT NULL,
-  `produto_ap_modelo` int(11) DEFAULT NULL,
-  `produto_ap_status` int(11) DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `produto_ap_id` int NOT NULL,
+  `produto_ap_produto` int DEFAULT NULL,
+  `produto_ap_modelo` int DEFAULT NULL,
+  `produto_ap_status` int DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `produtos_aplicacoes`
@@ -3569,11 +3583,11 @@ INSERT INTO `produtos_aplicacoes` (`produto_ap_id`, `produto_ap_produto`, `produ
 --
 
 CREATE TABLE `produtos_fornecedores` (
-  `produto_f_id` int(11) NOT NULL,
-  `produto_f_produto` int(11) DEFAULT NULL,
-  `produto_f_fornecedor` int(11) NOT NULL,
-  `produto_f_status` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `produto_f_id` int NOT NULL,
+  `produto_f_produto` int DEFAULT NULL,
+  `produto_f_fornecedor` int NOT NULL,
+  `produto_f_status` int NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `produtos_fornecedores`
@@ -3586,12 +3600,6 @@ INSERT INTO `produtos_fornecedores` (`produto_f_id`, `produto_f_produto`, `produ
 (5, 7, 44, 1),
 (6, 7, 54, 1),
 (7, 7, 63, 1),
-(8, 8, 17, 1),
-(9, 8, 25, 1),
-(10, 8, 37, 1),
-(11, 8, 44, 1),
-(12, 8, 54, 1),
-(13, 8, 63, 1),
 (14, 9, 17, 1),
 (15, 9, 25, 1),
 (16, 9, 37, 1),
@@ -3699,17 +3707,17 @@ INSERT INTO `produtos_fornecedores` (`produto_f_id`, `produto_f_produto`, `produ
 --
 
 CREATE TABLE `produtos_orcamentos` (
-  `produto_or_id` int(11) NOT NULL,
-  `produto_or_orcamento` int(11) DEFAULT NULL,
-  `produto_or_produto` int(11) DEFAULT NULL,
-  `produto_or_os` int(11) DEFAULT NULL,
-  `produto_or_cliente` int(11) DEFAULT NULL,
-  `produto_or_usuario` int(11) DEFAULT NULL,
-  `produto_or_equipamento` int(11) DEFAULT NULL,
-  `produto_or_status` int(11) NOT NULL DEFAULT '1',
+  `produto_or_id` int NOT NULL,
+  `produto_or_orcamento` int DEFAULT NULL,
+  `produto_or_produto` int DEFAULT NULL,
+  `produto_or_os` int DEFAULT NULL,
+  `produto_or_cliente` int DEFAULT NULL,
+  `produto_or_usuario` int DEFAULT NULL,
+  `produto_or_equipamento` int DEFAULT NULL,
+  `produto_or_status` int NOT NULL DEFAULT '1',
   `produto_or_data` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `produto_or_qtd` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `produto_or_qtd` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3718,11 +3726,11 @@ CREATE TABLE `produtos_orcamentos` (
 --
 
 CREATE TABLE `setores_tarefas` (
-  `setor_terefa_id` int(11) NOT NULL,
+  `setor_terefa_id` int NOT NULL,
   `setor_tarefa_nome` varchar(100) NOT NULL,
-  `setor_terefa_status` int(11) NOT NULL DEFAULT '1',
-  `setor_terefa_lixeira` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `setor_terefa_status` int NOT NULL DEFAULT '1',
+  `setor_terefa_lixeira` int NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `setores_tarefas`
@@ -3739,15 +3747,15 @@ INSERT INTO `setores_tarefas` (`setor_terefa_id`, `setor_tarefa_nome`, `setor_te
 --
 
 CREATE TABLE `status_tarefas` (
-  `id_status_tarefas` int(11) NOT NULL,
+  `id_status_tarefas` int NOT NULL,
   `status_tarefas_titulo` varchar(100) NOT NULL,
-  `status_tarefas_user` int(11) NOT NULL,
-  `status_tarefas_status` int(11) NOT NULL DEFAULT '1',
-  `status_tarefas_empresa` int(11) NOT NULL DEFAULT '1',
-  `status_tarefas_posicao` int(11) NOT NULL,
-  `status_tarefas_padrao` int(11) NOT NULL,
-  `status_tarefas_setor` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `status_tarefas_user` int NOT NULL,
+  `status_tarefas_status` int NOT NULL DEFAULT '1',
+  `status_tarefas_empresa` int NOT NULL DEFAULT '1',
+  `status_tarefas_posicao` int NOT NULL,
+  `status_tarefas_padrao` int NOT NULL,
+  `status_tarefas_setor` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `status_tarefas`
@@ -3763,11 +3771,11 @@ INSERT INTO `status_tarefas` (`id_status_tarefas`, `status_tarefas_titulo`, `sta
 --
 
 CREATE TABLE `subsetores_tarefas` (
-  `subsetor_id` int(11) NOT NULL,
+  `subsetor_id` int NOT NULL,
   `subsetor_nome` varchar(100) NOT NULL,
-  `subsetor_setor` int(11) NOT NULL,
-  `subsetor_status` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `subsetor_setor` int NOT NULL,
+  `subsetor_status` int NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3776,23 +3784,23 @@ CREATE TABLE `subsetores_tarefas` (
 --
 
 CREATE TABLE `tarefas` (
-  `tarefa_id` int(11) NOT NULL,
+  `tarefa_id` int NOT NULL,
   `tarefa_titulo` varchar(255) DEFAULT NULL,
   `tarefa_cliente` varchar(255) DEFAULT NULL,
   `tarefa_tarefa` longtext,
-  `tarefa_para` int(11) DEFAULT NULL,
+  `tarefa_para` int DEFAULT NULL,
   `tarefa_prazo` datetime DEFAULT NULL,
-  `tarefa_quem` int(11) DEFAULT NULL,
-  `tarefa_lixeira` int(11) DEFAULT '1',
-  `tarefa_emp` int(11) DEFAULT NULL,
-  `tarefa_status` int(11) NOT NULL DEFAULT '1',
+  `tarefa_quem` int DEFAULT NULL,
+  `tarefa_lixeira` int DEFAULT '1',
+  `tarefa_emp` int DEFAULT NULL,
+  `tarefa_status` int NOT NULL DEFAULT '1',
   `tarefa_etiqueta` varchar(255) DEFAULT NULL,
-  `tarefa_tipo` int(11) DEFAULT '1',
+  `tarefa_tipo` int DEFAULT '1',
   `tarefa_observacoes` longtext,
-  `tarefa_removido` int(11) NOT NULL,
+  `tarefa_removido` int NOT NULL,
   `tarefa_data_removido` date NOT NULL,
-  `tarefa_setor` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `tarefa_setor` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `tarefas`
@@ -3820,13 +3828,13 @@ INSERT INTO `tarefas` (`tarefa_id`, `tarefa_titulo`, `tarefa_cliente`, `tarefa_t
 --
 
 CREATE TABLE `tecnicos` (
-  `tecnico_id` int(11) NOT NULL,
-  `tecnico_tipo` int(11) NOT NULL,
+  `tecnico_id` int NOT NULL,
+  `tecnico_tipo` int NOT NULL,
   `tecnico_nome` varchar(255) NOT NULL,
   `tenico_cpf` varchar(20) NOT NULL,
-  `tecnico_status` int(11) NOT NULL DEFAULT '1',
+  `tecnico_status` int NOT NULL DEFAULT '1',
   `tecnico_senha` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3835,9 +3843,9 @@ CREATE TABLE `tecnicos` (
 --
 
 CREATE TABLE `tipos_produtos` (
-  `id_tipo_produto` int(11) NOT NULL,
+  `id_tipo_produto` int NOT NULL,
   `nome_tipo_produtos` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `tipos_produtos`
@@ -3854,10 +3862,10 @@ INSERT INTO `tipos_produtos` (`id_tipo_produto`, `nome_tipo_produtos`) VALUES
 --
 
 CREATE TABLE `tipo_colaborador` (
-  `id_tipo_colaborador` int(255) NOT NULL,
+  `id_tipo_colaborador` int NOT NULL,
   `nome_tipo_colaborador` varchar(255) NOT NULL,
   `status_tipo_colaborador` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `tipo_colaborador`
@@ -3876,20 +3884,20 @@ INSERT INTO `tipo_colaborador` (`id_tipo_colaborador`, `nome_tipo_colaborador`, 
 --
 
 CREATE TABLE `users` (
-  `user_id` int(11) NOT NULL,
+  `user_id` int NOT NULL,
   `user_nome` varchar(255) NOT NULL,
   `user_login` varchar(100) NOT NULL,
   `user_senha` varchar(100) NOT NULL,
   `user_email` varchar(100) NOT NULL,
   `user_cadastro` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `user_status` int(11) NOT NULL DEFAULT '1',
-  `user_quem` int(11) NOT NULL,
-  `user_emp` int(11) NOT NULL,
+  `user_status` int NOT NULL DEFAULT '1',
+  `user_quem` int NOT NULL,
+  `user_emp` int NOT NULL,
   `user_telefone` varchar(255) NOT NULL,
-  `user_lixeira` int(11) NOT NULL DEFAULT '1',
+  `user_lixeira` int NOT NULL DEFAULT '1',
   `user_foto` varchar(400) NOT NULL,
-  `user_tipo` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `user_tipo` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Despejando dados para a tabela `users`
@@ -3930,14 +3938,14 @@ INSERT INTO `users` (`user_id`, `user_nome`, `user_login`, `user_senha`, `user_e
 --
 
 CREATE TABLE `user_setores` (
-  `id_user_setor` int(11) NOT NULL,
-  `user_setor_setor` int(11) NOT NULL,
-  `id_user_usuario` int(11) NOT NULL,
-  `id_user_empresa` int(11) NOT NULL DEFAULT '1',
-  `id_user_status` int(11) NOT NULL DEFAULT '1',
-  `id_user_quem` int(11) NOT NULL,
+  `id_user_setor` int NOT NULL,
+  `user_setor_setor` int NOT NULL,
+  `id_user_usuario` int NOT NULL,
+  `id_user_empresa` int NOT NULL DEFAULT '1',
+  `id_user_status` int NOT NULL DEFAULT '1',
+  `id_user_quem` int NOT NULL,
   `id_user_data` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Índices para tabelas despejadas
@@ -4155,205 +4163,205 @@ ALTER TABLE `user_setores`
 -- AUTO_INCREMENT de tabela `anotacoes_clientes`
 --
 ALTER TABLE `anotacoes_clientes`
-  MODIFY `anotacoes_clientes_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=752;
+  MODIFY `anotacoes_clientes_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=752;
 
 --
 -- AUTO_INCREMENT de tabela `atendimentos`
 --
 ALTER TABLE `atendimentos`
-  MODIFY `atendimento_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `atendimento_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `atualizacao_tarefas`
 --
 ALTER TABLE `atualizacao_tarefas`
-  MODIFY `id_at_tarefa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id_at_tarefa` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de tabela `chamados`
 --
 ALTER TABLE `chamados`
-  MODIFY `chamado_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `chamado_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de tabela `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `cliente_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=501;
+  MODIFY `cliente_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=501;
 
 --
 -- AUTO_INCREMENT de tabela `contas_areceber`
 --
 ALTER TABLE `contas_areceber`
-  MODIFY `conta_areceber_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `conta_areceber_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `contas_pagar`
 --
 ALTER TABLE `contas_pagar`
-  MODIFY `conta_pagar_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `conta_pagar_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `empresas`
 --
 ALTER TABLE `empresas`
-  MODIFY `empresa_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `empresa_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `equipamentos`
 --
 ALTER TABLE `equipamentos`
-  MODIFY `equipamento_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=725;
+  MODIFY `equipamento_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=725;
 
 --
 -- AUTO_INCREMENT de tabela `etiquetas`
 --
 ALTER TABLE `etiquetas`
-  MODIFY `etiqueta_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `etiqueta_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `fluxo_caixa`
 --
 ALTER TABLE `fluxo_caixa`
-  MODIFY `fluxo_caixa_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `fluxo_caixa_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de tabela `fornecedores`
 --
 ALTER TABLE `fornecedores`
-  MODIFY `fornecedor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `fornecedor_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT de tabela `fotos`
 --
 ALTER TABLE `fotos`
-  MODIFY `foto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `foto_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de tabela `interacoes_os`
 --
 ALTER TABLE `interacoes_os`
-  MODIFY `interacao_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `interacao_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de tabela `local_estoque`
 --
 ALTER TABLE `local_estoque`
-  MODIFY `id_local_estoque` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_local_estoque` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `marcas`
 --
 ALTER TABLE `marcas`
-  MODIFY `marca_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `marca_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de tabela `modelos`
 --
 ALTER TABLE `modelos`
-  MODIFY `modelo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `modelo_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT de tabela `orcamentos`
 --
 ALTER TABLE `orcamentos`
-  MODIFY `orcamento_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `orcamento_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de tabela `os`
 --
 ALTER TABLE `os`
-  MODIFY `os_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `os_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT de tabela `os_status`
 --
 ALTER TABLE `os_status`
-  MODIFY `os_status_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `os_status_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de tabela `os_tipos`
 --
 ALTER TABLE `os_tipos`
-  MODIFY `os_tipo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `os_tipo_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de tabela `produtos`
 --
 ALTER TABLE `produtos`
-  MODIFY `produto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=388;
+  MODIFY `produto_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=388;
 
 --
 -- AUTO_INCREMENT de tabela `produtos_aplicacoes`
 --
 ALTER TABLE `produtos_aplicacoes`
-  MODIFY `produto_ap_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=573;
+  MODIFY `produto_ap_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=574;
 
 --
 -- AUTO_INCREMENT de tabela `produtos_fornecedores`
 --
 ALTER TABLE `produtos_fornecedores`
-  MODIFY `produto_f_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
+  MODIFY `produto_f_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
 
 --
 -- AUTO_INCREMENT de tabela `produtos_orcamentos`
 --
 ALTER TABLE `produtos_orcamentos`
-  MODIFY `produto_or_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `produto_or_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `setores_tarefas`
 --
 ALTER TABLE `setores_tarefas`
-  MODIFY `setor_terefa_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `setor_terefa_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de tabela `status_tarefas`
 --
 ALTER TABLE `status_tarefas`
-  MODIFY `id_status_tarefas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_status_tarefas` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `subsetores_tarefas`
 --
 ALTER TABLE `subsetores_tarefas`
-  MODIFY `subsetor_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `subsetor_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `tarefas`
 --
 ALTER TABLE `tarefas`
-  MODIFY `tarefa_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `tarefa_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de tabela `tecnicos`
 --
 ALTER TABLE `tecnicos`
-  MODIFY `tecnico_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `tecnico_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `tipos_produtos`
 --
 ALTER TABLE `tipos_produtos`
-  MODIFY `id_tipo_produto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_tipo_produto` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de tabela `tipo_colaborador`
 --
 ALTER TABLE `tipo_colaborador`
-  MODIFY `id_tipo_colaborador` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_tipo_colaborador` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de tabela `user_setores`
 --
 ALTER TABLE `user_setores`
-  MODIFY `id_user_setor` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_user_setor` int NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

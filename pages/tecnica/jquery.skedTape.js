@@ -718,7 +718,9 @@
 		renderEvent: function (event) {
 			// Create event node
 			if (event.teste == "gustavo") {
-				direcionar(event)
+				// alert('opa')
+				console.log('ola mundo an')
+				// direcionar(event);
 			}
 
 			if (event.url && !event.disabled) {

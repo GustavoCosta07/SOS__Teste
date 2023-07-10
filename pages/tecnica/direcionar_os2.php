@@ -77,7 +77,7 @@ function minhaFuncao($conn)
     <!-- <script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script> -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/solid.css" integrity="sha384-wnAC7ln+XN0UKdcPvJvtqIH3jOjs9pnKnq9qX68ImXvOGz2JuFoEiCjT8jyZQX2z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css" integrity="sha384-HbmWTHay9psM8qyzEKPc8odH4DsOuzdejtnr+OFtDmOcIVnhgReQ4GZBH7uwcjf6" crossorigin="anonymous">
-    <script src="jquery.skedTape.js"></script>
+    <script src="skedTape.js"></script>
     <link rel=" stylesheet" href="jquery.skedTape copy.css">
 
 
@@ -219,7 +219,7 @@ function minhaFuncao($conn)
         .direcionado {
             background-color: #105BFB;
             border: #105BFB;
-            
+
         }
 
         .aviso {
@@ -807,15 +807,22 @@ function minhaFuncao($conn)
             }
         });
         $sked1.on('event:dragEnded.skedtape', function(e) {
+            //realizar 2 ifs, quando contém locations2 significa que é manipulação da própria tabela
+            //quando não contém locations2 dentro de userData significa que é manipulação do carrossel
             var event = e.detail.event;
             var startTime = event.start;
+            event.status = true
+            // debugger
             var currentTime = new Date();
             if (startTime < currentTime) {
                 event.start = currentTime;
                 $sked1.skedTape('updateEvent', event);
             }
+
+            direcionar(event)
         });
         $sked1.on('event:click.skedtape', function(e) {
+            // debugger
             $sked1.skedTape('removeEvent', e.detail.event.id);
         });
         $sked1.on('timeline:click.skedtape', function(e, api) {
@@ -833,8 +840,11 @@ function minhaFuncao($conn)
                         duration: 60 * 90 * 1000, //1h e meia
                         started: false,
                         className: 'deslocamento-event',
-                        userData: locations2,
-                        teste: 'gustavo',
+                        userData: {
+                            locations: locations2,
+                            id_os: selectedId
+                        },
+                        // teste: 'gustavo',
                     });
                     document.getElementById(selectedId).classList.remove('highlight-card');
                     selectedId = null;
@@ -866,7 +876,7 @@ function minhaFuncao($conn)
                     };
                     const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
                     processedOrder.location = technician.id;
-                    processedOrder.os_started = (processedOrder.os_status_nome === 'Em atendimento') ? true : (order.os_status_nome === 'Direcionado') ? false : false;
+                    processedOrder.os_started = (processedOrder.os_status_nome === 'Em atendimento') ? true : (order.os_status_nome === 'Aberta') ? false : false;
                     const statusToClassNameMap = {
                         'Em atendimento': 'atendimento',
                         'Direcionado': 'direcionado',
@@ -874,9 +884,12 @@ function minhaFuncao($conn)
                         'Concluido': 'concluido',
                         'Orçamento': 'orcamento'
                     };
-
+                    // debugger
                     processedOrder.className = statusToClassNameMap[processedOrder.os_status_nome] || 'aviso';
-
+                    processedOrder.userData = {
+                        id_os: processedOrder.os_id,
+                        locations: locations2
+                    }
                     if (technician) {
                         const tecnicoIndex = OsPorTecnico.findIndex(item => item.idTecnico === technician.idTecnico);
                         if (tecnicoIndex !== -1) {
@@ -898,13 +911,60 @@ function minhaFuncao($conn)
                     return processedOrder;
                 });
                 const teste = gerarHoraInicio(OsPorTecnico)
-                
+
 
                 // Retornar apenas o item que teve os novos atributos adicionados
                 // const filteredProcessedData = processedData.filter(order => 'className' in order && 'started' in order);
 
                 return teste;
             }
+        }
+
+
+
+
+
+
+
+        function direcionar(event) {
+            console.log('hshshshs', event)
+            // alert(event.start)
+            const event_id = event.userData.id_os; // exemplo
+            const event_start = event.start; // exemplo
+            const event_idTecnico = event.userData.locations[event.location - 1].idTecnico
+            // Montar o objeto de dados a ser enviado no corpo da requisição
+            const data = {
+                event_id: event_id,
+                event_start: event_start,
+                event_idTecnico: event_idTecnico
+            };
+            console.log('data', data)
+
+            fetch('teste.php', {
+                    method: 'POST', // ou 'PUT'
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(function(response) {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        throw new Error('Erro na requisição: ' + response.status);
+                    }
+                })
+                .then(function(data) {
+                    // Tratar a resposta do PHP, se necessário
+                    console.log(data);
+                })
+                .catch(function(error) {
+                    // Tratar qualquer erro ocorrido durante a requisição
+                    console.log('Erro: ' + error.message);
+                });
+
+            alert(`O.S Direcionada para o técnico ${event.userData.locations[event.location - 1].name}`)
+            location.reload();
         }
     </script>
 </body>
