@@ -31,6 +31,25 @@ function minhaFuncao($conn)
 
     // $resultadoJson = json_encode($resultado);
 
+    // SELECT os.*, clientes.cliente_fantasia, clientes.cliente_cep, os_tipos.os_tipo_nome, os_status.os_status_nome, os_eventos.*
+    // FROM os
+    // JOIN clientes ON os.os_cliente = clientes.cliente_id
+    // JOIN os_status ON os.os_status = os_status.os_status_id
+    // JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id,
+    // os_eventos
+
+    //     SELECT os.*, clientes.cliente_fantasia, clientes.cliente_cep, os_tipos.os_tipo_nome, 
+    //     os_status.os_status_nome, NULL as coluna1, NULL as coluna2, NULL as coluna3, NULL as coluna4
+    // FROM os
+    // JOIN clientes ON os.os_cliente = clientes.cliente_id
+    // JOIN os_status ON os.os_status = os_status.os_status_id
+    // JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id
+
+    // UNION ALL
+
+    // SELECT NULL, NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL,
+    // NULL, NULL, NULL, id, id_tecnico, evento_fim, evento_inicio FROM os_eventos
+
 
 
 
@@ -39,24 +58,45 @@ function minhaFuncao($conn)
     // return $resultadoJson;
 
     // Execução da consulta SQL
-    $query = "SELECT os.*, clientes.cliente_fantasia, os_tipos.os_tipo_nome, os_status.os_status_nome
-        FROM os
-        JOIN clientes ON os.os_cliente = clientes.cliente_id
-        JOIN os_status ON os.os_status = os_status.os_status_id
-        JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id
-        
-        ";
-    $result = mysqli_query($conn, $query);
-
-    if (!$result) {
+    // Executar a primeira consulta
+    // Executar a primeira consulta
+    // Executar a primeira consulta
+    $query1 = "SELECT os.*, clientes.cliente_fantasia, os_tipos.os_tipo_nome, os_status.os_status_nome
+FROM os
+JOIN clientes ON os.os_cliente = clientes.cliente_id
+JOIN os_status ON os.os_status = os_status.os_status_id
+JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
+    $result1 = mysqli_query($conn, $query1);
+    if (!$result1) {
         die("Erro na consulta: " . mysqli_error($conn));
     }
 
-    // Processamento dos resultados
-    $data = array();
-    while ($row = mysqli_fetch_assoc($result)) {
-        $data[] = $row;
+    // Armazenar os resultados da primeira consulta em um array
+    $data1 = array();
+    while ($row = mysqli_fetch_assoc($result1)) {
+        $data1[] = $row;
     }
+
+    // Executar a segunda consulta
+    $query2 = "SELECT os_eventos.*, id_tecnico AS os_usuario, os_status.os_status_nome AS status
+    FROM os_eventos
+    JOIN os_status ON os_eventos.status = os_status.os_status_id";
+    $result2 = mysqli_query($conn, $query2);
+    if (!$result2) {
+        die("Erro na consulta: " . mysqli_error($conn));
+    }
+
+    // Armazenar os resultados da segunda consulta em um array e adicionar a propriedade "evento" com valor true
+    $data2 = array();
+    while ($row = mysqli_fetch_assoc($result2)) {
+        $row['evento'] = true;
+        $data2[] = $row;
+    }
+
+    // Mesclar os dois arrays de resultados em um único array
+    $data = array_merge($data1, $data2);
+
+    // Codificar o array em JSON
     $resultadoJson = json_encode($data);
     echo "<script>console.log('osss',$resultadoJson);</script>";
     return $resultadoJson;
@@ -77,8 +117,9 @@ function minhaFuncao($conn)
     <!-- <script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script> -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/solid.css" integrity="sha384-wnAC7ln+XN0UKdcPvJvtqIH3jOjs9pnKnq9qX68ImXvOGz2JuFoEiCjT8jyZQX2z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css" integrity="sha384-HbmWTHay9psM8qyzEKPc8odH4DsOuzdejtnr+OFtDmOcIVnhgReQ4GZBH7uwcjf6" crossorigin="anonymous">
-    <script src="skedTape.js"></script>
+    <!-- <script src="skedTape.js"></script> -->
     <link rel=" stylesheet" href="jquery.skedTape copy.css">
+    <script src="skedtape.js"></script>
 
 
 
@@ -621,15 +662,15 @@ function minhaFuncao($conn)
                 let OrdemAtualOuAnterior = true
 
                 // Ordenar as ordens pelo horário de início imutável (horaInicialEsperada)
-                ordensDoTecnico.sort((a, b) => Date.parse(a.os_hora_inicial_esperada) - Date.parse(b.os_hora_inicial_esperada));
+                ordensDoTecnico.sort((a, b) => Date.parse(a.os_hora_inicial_esperada || a.evento_inicio) - Date.parse(b.os_hora_inicial_esperada || b.evento_inicio));
 
 
                 for (let i = 0; i < ordensDoTecnico.length; i++) {
                     const ordem = ordensDoTecnico[i];
                     const ordemAnterior = i > 0 ? ordensDoTecnico[i - 1] : ordensDoTecnico[i];
-
-
+                    
                     if (ordem.os_id != ordemAnterior.os_id) { //se for diferente é hora de mexer na ordem atual, se for igual não precisa pois significa que é a primeira
+                        //continuar logica dos eventos de almoço e deslocamento a partir daqui
                         if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 1 && ordem.os_started == false) {
                             //isto só significa que a os esta atrasada e o tecnico não iniciou a ordem
                             ordem.start = i > 0 ? verifyOrdemAnterior(ordem, ordemAnterior, 1) : getCurrentTime();
@@ -842,7 +883,8 @@ function minhaFuncao($conn)
                         className: 'deslocamento-event',
                         userData: {
                             locations: locations2,
-                            id_os: selectedId
+                            id_os: selectedId,
+                            // cliente: e.detail.event.cliente_fantasia
                         },
                         // teste: 'gustavo',
                     });
@@ -865,10 +907,10 @@ function minhaFuncao($conn)
         function processOrders(data, type) {
             if (type === 1) {
                 // Retornar apenas as ordens de serviço com 'direcionado' igual a 'N'
-                return data.filter(order => order.direcionado === 'N');
+                return data.filter(order => order.os_status_nome === 'Aberta');
             } else if (type === 2) {
                 // Filtrar as ordens de serviço com 'direcionado' igual a 'Y'
-                const filteredData = data.filter(order => order.direcionado === 'Y');
+                const filteredData = data.filter(order => order.direcionado === 'Y' || order.evento == true);
 
                 const processedData2 = filteredData.map(order => {
                     let processedOrder = {
@@ -884,11 +926,12 @@ function minhaFuncao($conn)
                         'Concluido': 'concluido',
                         'Orçamento': 'orcamento'
                     };
-                    // debugger
+               
                     processedOrder.className = statusToClassNameMap[processedOrder.os_status_nome] || 'aviso';
                     processedOrder.userData = {
                         id_os: processedOrder.os_id,
-                        locations: locations2
+                        locations: locations2,
+                        cliente: processedOrder.cliente_fantasia
                     }
                     if (technician) {
                         const tecnicoIndex = OsPorTecnico.findIndex(item => item.idTecnico === technician.idTecnico);
@@ -940,7 +983,7 @@ function minhaFuncao($conn)
             };
             console.log('data', data)
 
-            fetch('teste.php', {
+            fetch('rotaDirecionar.php', {
                     method: 'POST', // ou 'PUT'
                     headers: {
                         'Content-Type': 'application/json'
@@ -965,6 +1008,24 @@ function minhaFuncao($conn)
 
             alert(`O.S Direcionada para o técnico ${event.userData.locations[event.location - 1].name}`)
             location.reload();
+        }
+
+        function calcularDistancia() {
+            const origin = 'CEP1';
+            const destination = 'CEP2';
+            const apiKey = 'YOUR_API_KEY';
+
+            const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destination}&key=${apiKey}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const distance = data.rows[0].elements[0].distance.text;
+                    const duration = data.rows[0].elements[0].duration.text;
+                    console.log(`Distância: ${distance}`);
+                    console.log(`Duração: ${duration}`);
+                });
+
         }
     </script>
 </body>
