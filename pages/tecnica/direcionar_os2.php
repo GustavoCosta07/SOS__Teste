@@ -20,47 +20,6 @@ function buscarUsers(QueryService $queryService)
 
 function minhaFuncao($conn)
 {
-    // $tabelaOS = "os";
-    // $colunaUsers = "";
-    // $condicoesUsers = null;
-    // $joins = array(
-    //     "JOIN os_status ON os.os_status = os_status.os_status_id"
-    // );
-    // $resultado = $queryService->busca($tabelaOS, $colunaUsers, $condicoesUsers, $joins);
-
-
-    // $resultadoJson = json_encode($resultado);
-
-    // SELECT os.*, clientes.cliente_fantasia, clientes.cliente_cep, os_tipos.os_tipo_nome, os_status.os_status_nome, os_eventos.*
-    // FROM os
-    // JOIN clientes ON os.os_cliente = clientes.cliente_id
-    // JOIN os_status ON os.os_status = os_status.os_status_id
-    // JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id,
-    // os_eventos
-
-    //     SELECT os.*, clientes.cliente_fantasia, clientes.cliente_cep, os_tipos.os_tipo_nome, 
-    //     os_status.os_status_nome, NULL as coluna1, NULL as coluna2, NULL as coluna3, NULL as coluna4
-    // FROM os
-    // JOIN clientes ON os.os_cliente = clientes.cliente_id
-    // JOIN os_status ON os.os_status = os_status.os_status_id
-    // JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id
-
-    // UNION ALL
-
-    // SELECT NULL, NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL,
-    // NULL, NULL, NULL, id, id_tecnico, evento_fim, evento_inicio FROM os_eventos
-
-
-
-
-    // echo "<script>console.log('osss',$resultadoJson);</script>";
-
-    // return $resultadoJson;
-
-    // Execução da consulta SQL
-    // Executar a primeira consulta
-    // Executar a primeira consulta
-    // Executar a primeira consulta
     $query1 = "SELECT os.*, clientes.cliente_fantasia, os_tipos.os_tipo_nome, os_status.os_status_nome
 FROM os
 JOIN clientes ON os.os_cliente = clientes.cliente_id
@@ -78,9 +37,11 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
     }
 
     // Executar a segunda consulta
-    $query2 = "SELECT os_eventos.*, id_tecnico AS os_usuario, os_status.os_status_nome AS status
+    $query2 = "SELECT os_eventos.*, id_tecnico AS os_usuario, os_status.os_status_nome AS status, os_tipo_eventos.nome_evento
     FROM os_eventos
-    JOIN os_status ON os_eventos.status = os_status.os_status_id";
+    JOIN os_status ON os_eventos.status = os_status.os_status_id
+    JOIN os_tipo_eventos ON os_eventos.tipo = os_tipo_eventos.id_evento
+    ";
     $result2 = mysqli_query($conn, $query2);
     if (!$result2) {
         die("Erro na consulta: " . mysqli_error($conn));
@@ -117,11 +78,8 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
     <!-- <script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script> -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/solid.css" integrity="sha384-wnAC7ln+XN0UKdcPvJvtqIH3jOjs9pnKnq9qX68ImXvOGz2JuFoEiCjT8jyZQX2z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css" integrity="sha384-HbmWTHay9psM8qyzEKPc8odH4DsOuzdejtnr+OFtDmOcIVnhgReQ4GZBH7uwcjf6" crossorigin="anonymous">
-    <!-- <script src="skedTape.js"></script> -->
     <link rel=" stylesheet" href="jquery.skedTape copy.css">
     <script src="skedtape.js"></script>
-
-
 
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
@@ -188,7 +146,6 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
             padding: 0;
         }
 
-
         .highlight-card {
             filter: brightness(200%);
             /* Aumenta o brilho em 20% */
@@ -217,10 +174,7 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
             overflow-y: auto;
         }
 
-
-
         .deslocamento {
-
             background-color: #0446c2;
             transition: 200ms background-color;
             top: 1px;
@@ -236,7 +190,6 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
             min-width: 10px;
             cursor: default;
             line-height: 16px;
-
         }
 
         .deslocamento {
@@ -263,8 +216,14 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
 
         }
 
-        .aviso {
-            background-color: #FF1493;
+        .concluido {
+            background-color: #24B787;
+        }
+
+        .descanso {
+            background-color: yellowgreen;
+            border: yellowgreen;
+            pointer-events: none;
         }
 
         .servico {
@@ -338,7 +297,6 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
             height: 0;
             border: 3px solid transparent;
         }
-
 
         .sked-tape__grid>li {
             display: block;
@@ -426,9 +384,6 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
             }
         });
 
-
-
-
         var resultadoConsultaTecnicos = <?php echo $resultadoConsultaTecnicos ?>;
 
         var locations2 = resultadoConsultaTecnicos.map(function(dado, index) {
@@ -439,108 +394,13 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
             };
         });
 
-        // console.log('tecnicos', locations2)
-
-
-        // console.log('opaió', resultadoConsulta)
         let teste2 = processOrders(resultadoConsulta, 2)
-
-        // console.log('yuri', teste)
-
-        var events = [
-            //   os ja direcionadas entrarão nestas variaveus com estes parametros
-            // mudar o parametro location para tecnicos
-            // criar a lógica de adicionar na próxima posição 
-            {
-                name: 'Meeting 2 (ovelapping)',
-                location: '5',
-                start: today(8, 30),
-                end: today(16, 55),
-                // className: 'deslocamento-event',
-                started: false,
-                type: ''
-            },
-            {
-                name: 'Meeting 2 (ovelapping)',
-                location: '4',
-                start: today(8, 0),
-                end: today(10, 0),
-                started: true,
-                type: ''
-            },
-            {
-                name: 'Meeting 2 (ovelapping)',
-                location: '4',
-                start: today(10, 01),
-                end: today(12, 0),
-                started: true,
-                type: 'deslocamento'
-            },
-            {
-                name: 'Meeting 2 (ovelapping)',
-                location: '4',
-                start: today(12, 01),
-                end: today(13, 0),
-                started: true,
-                type: 'deslocamento',
-                className: 'deslocamento-event'
-            },
-            {
-                name: 'Meeting 2 (ovelapping)',
-                location: '4',
-                start: today(13, 01),
-                end: today(15, 0),
-                started: true,
-                type: 'deslocamento',
-                className: 'atendimento-event'
-            },
-            {
-                name: 'Meeting 2 (ovelapping)',
-                location: '4',
-                start: today(13, 01),
-                end: today(15, 0),
-                started: true,
-                type: 'deslocamento',
-                className: 'atendimento-event'
-            },
-            {
-                name: 'Meeting 2 (ovelapping)',
-                location: '4',
-                start: today(15, 01),
-                end: today(18, 0),
-                started: true,
-                type: '',
-                className: 'servico'
-            }
-
-
-        ];
-
-        events.forEach(function(event) {
-            if (compareCurrentTime(event.start) == 1 && event.started == false) {
-                event.start = getCurrentTime()
-
-            }
-            // if (event.type === 'deslocamento') {
-            //     event.element.addClass('deslocamento'); //isto não funciona, tem que pesquisar como adiciona classe
-            // }
-
-        });
 
         teste2.forEach(function(event) {
             if (compareCurrentTime(event.start) == 1 && event.started == false) {
                 event.start = getCurrentTime()
-                // fazer outro for para verificar se existe mais de uma os com um tecnico e se ela esta em horario a frente para se arrastar 
-                // - verificar se tem os pro mesmo tecnico e se a hora inicial é antes da hora inicial da outra
-                // se for significa que ela esta após ela, então calcular onde ela deve estar 
-                // if (condition) {
-
-                // }
 
             }
-            // if (event.type === 'deslocamento') {
-            //     event.element.addClass('deslocamento'); //isto não funciona, tem que pesquisar como adiciona classe
-            // }
 
         });
 
@@ -611,43 +471,51 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
         }
 
         function verifyOrdemAnterior(ordemAtual, ordemAnterior, type) {
-            //type vai representar qual verificação foi feita, exemplo: 
+            //O type vai representar qual verificação foi feita, exemplo: 
             // - esta atrasado e não iniciou? type = 1
             // - esta atrasado mas ja começou? type = 2
+            //talvez uma abordagem boa seria verificar o type como algo que começou ou não
 
             if (type == 1) {
-                //verificar qual a situação da ordem anterior, se ela ja tiver acabado ótimo, mas se ela ainda tiver em andamento, 
-                // devo verificar se ela ainda esta respeitando o end proposto 
-                //ela pode ter começado atrasada, 
-                //tenho que me basear na hora de inicio real
-                //se a hora de termino da os anterior é maior que a de inicio, se não, recebe o horario de inicio normal
 
                 if (ordemAnterior.os_finalized == 'N' && compareBeforeAfter(ordemAnterior.end, ordemAtual.os_hora_inicial_esperada) == 0) {
+                    //Esta condição significa que a ordem anterior a que esta sendo verificada no momento 
+                    //ainda não foi finalizada pelo técnico e que seu atributo end esta setado como o horario atual
+                    //se a segunda condição for atendida significa que o end da anterior é menor do que a hora de 
+                    //inicio esperada da ordem atual, logo seu start pode ser setado como sua hora de inicio de origem 
                     return ordemAtual.os_hora_inicial_esperada
                 }
 
-                if (ordemAnterior.os_finalized == 'N' && compareBeforeAfter(ordemAnterior.end, ordemAtual.os_hora_inicial_esperada) == 1) {
+                if (ordemAnterior.status == 'Em atendimento' && compareBeforeAfter(ordemAnterior.end, ordemAtual.os_hora_inicial_esperada) == 0) {
+                    //esta condição significa que a ordem anterior é um evento de descanso, deslocamento e etc... 
+                    //este evento ainda não terminou e seu atributo end esta setado como o horario atual
+                    //se a segunda condição for atendida significa que o end do evento é menor do que a hora de 
+                    //inicio esperada da ordem atual, logo seu start pode ser setado como sua hora de inicio de origem 
+                    //(eu só sei que é um evento pois as ordens não contém a propriedade status)
+                    return ordemAtual.os_hora_inicial_esperada
+                }
+
+                if (ordemAnterior.os_status_nome == 'Concluido' && compareBeforeAfter(ordemAnterior.end, ordemAtual.os_hora_inicial_esperada) == 1) {
+                    //esta condição significa que a ordem anterior ja finalizou, mas finalizou roubando tempo da hora atual 
+                    //o motivo até então é desconhecido, ela pode ter começado atrasada por conta de uma outra ordem ou pode
+                    //simplesmente ter atrasado mesmo seu horário de término
+                    //neste caso simplesmente retorne para o start da ordem atual a hora end da ordem anterior
+                    //para dar a sensação de empurramento
                     return addMinutesToTimeMaisUm(ordemAnterior.end)
                 }
 
-                // if (ordemAnterior.os_finalized == 'N') {
-                //     return addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final))
-                // }
+                if (ordemAnterior.status == 'Concluido' && compareBeforeAfter(ordemAnterior.end, ordemAtual.os_hora_inicial_esperada) == 0) {
+                    //esta condição significa que um evento já finalizou, e seu horario de fim não impactou 
+                    //no horario de inicio na ordem atual
 
-                if (ordemAnterior.os_finalized == 'Y' && ordemAtual.os_hora_inicio) {
-                    //se ele ja finalizou tenho que verificar se a ordem anterior finalizou depois da hora inicial esperada
-                    //da ordem atual
-                    // mas se é o caso e ela ja começou, que hora a ordem atual começou, neste caso independe da anterior né? 
-                    //  
+                    return ordemAtual.os_hora_inicial_esperada
 
-                    return ordemAtual.os_hora_inicio
                 }
 
-                if (ordemAnterior.os_finalized == 'Y' && !ordemAtual.os_hora_inicio) {
-                    //se ele ja finalizou tenho que verificar se a ordem anterior finalizou depois da hora inicial esperada
-                    //da ordem atual
-                    // mas se é o caso e ela ja começou, que hora a ordem atual começou, neste caso independe da anterior né? 
-                    //  
+                if (ordemAnterior.status == 'Concluido' && compareBeforeAfter(ordemAnterior.end, ordemAtual.os_hora_inicial_esperada) == 1) {
+                    //esta condição significa que um evento já finalizou, e seu horario de fim impactou 
+                    //no horario de inicio na ordem atual (mas impactou como? ela ja começou ou não? )
+                    //acredito que automaticamente se algo começou, o retorno sempre será o end, sendo assim, o type é 2
 
                     return getCurrentTime()
                 }
@@ -664,13 +532,31 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
                 // Ordenar as ordens pelo horário de início imutável (horaInicialEsperada)
                 ordensDoTecnico.sort((a, b) => Date.parse(a.os_hora_inicial_esperada || a.evento_inicio) - Date.parse(b.os_hora_inicial_esperada || b.evento_inicio));
 
-
                 for (let i = 0; i < ordensDoTecnico.length; i++) {
+                    debugger
                     const ordem = ordensDoTecnico[i];
                     const ordemAnterior = i > 0 ? ordensDoTecnico[i - 1] : ordensDoTecnico[i];
-                    
-                    if (ordem.os_id != ordemAnterior.os_id) { //se for diferente é hora de mexer na ordem atual, se for igual não precisa pois significa que é a primeira
+
+                    if (ordem.os_id != ordemAnterior.os_id || ordem.os_id == undefined) { //se for diferente é hora de mexer na ordem atual, se for igual não precisa pois significa que é a primeira
                         //continuar logica dos eventos de almoço e deslocamento a partir daqui
+
+                        if (ordem.evento_inicio && ordem.status == "Em atendimento") {
+                            //acredito que não precisa preocupar com a anterior pois seria impossivel ter esta propriedade
+                            //se o tecnico tiver uma ordem aberta 
+                            ordem.start = ordem.evento_inicio
+                            ordem.end = getCurrentTime()
+
+                        }
+
+                        if (ordem.evento_inicio && ordem.status == "Concluido") {
+                            //acredito que não precisa preocupar com a anterior pois seria impossivel ter esta propriedade
+                            //se o tecnico tiver uma ordem aberta 
+                            ordem.start = ordem.evento_inicio
+                            ordem.end = ordem.evento_fim
+
+
+                        }
+
                         if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 1 && ordem.os_started == false) {
                             //isto só significa que a os esta atrasada e o tecnico não iniciou a ordem
                             ordem.start = i > 0 ? verifyOrdemAnterior(ordem, ordemAnterior, 1) : getCurrentTime();
@@ -682,7 +568,6 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
                             ordem.start = i > 0 ? verifyOrdemAnterior(ordem, ordemAnterior, 1) : getCurrentTime();
                             ordem.end = addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final), ordem.os_status_nome, ordem)
                         }
-                        //necessario colocar uma condição true aqui  
 
                         if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 0 && ordem.os_started == false) {
                             //isto só significa que a os esta atrasada e o tecnico não iniciou a ordem
@@ -690,21 +575,8 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
                             ordem.end = addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
                         }
 
-
-
-                        // if (compareCurrentTime(ordemAnterior.os_hora_inicial_esperada) == 1 && ordemAnterior.os_started == true) {
-                        //     ordem.start = ordemAnterior.os_hora_inicio
-                        //     ordem.end = addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final))
-                        // }
-
-                        // if (ordemAnterior.os_started == true && compareCurrentTime(ordemAnterior.end) == 1 && ordemAnterior.finalized == false) {
-                        //     ordemAnterior.end = addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final))
-                        // }
                     }
-
-                    // Primeira ordem do técnico
                     // as verificações vão ser quase sempre as mesma, depois da para atribuir isto a um serviço dinamico
-                    // ordem.start = ordem.horaInicialEsperada;
                     if (OrdemAtualOuAnterior) {
 
                         if (compareCurrentTime(ordemAnterior.os_hora_inicial_esperada) == 1 && ordemAnterior.os_started == false) {
@@ -714,7 +586,9 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
 
                         if (compareCurrentTime(ordemAnterior.os_hora_inicial_esperada) == 1 && ordemAnterior.os_started == true) {
                             ordemAnterior.start = ordemAnterior.os_hora_inicio
-                            ordemAnterior.end = verifyFinalHour(addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final)), ordemAnterior) ? getCurrentTime() : addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final));
+                            ordemAnterior.end = verifyFinalHour(addMinutesToTime(ordemAnterior.os_hora_inicio, 
+                            parseInt(ordemAnterior.os_previsao_hora_final)), ordemAnterior) ? getCurrentTime() : 
+                            addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final));
 
                             // o end é 60 minutos se ela ainda n tiver sifo finalizada e o horario atual seja maior que 
                             // o horario de termino, se ela não tiver sido finalizada e o end esperado ja for menor que a 
@@ -805,13 +679,10 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
         }
 
         function addMinutesToTimeMaisUm(date) {
-            // Cria uma cópia do objeto Date para evitar modificação indesejada
             const newDate = new Date(date.getTime());
 
-            // Adiciona 1 minuto ao objeto Date
             newDate.setMinutes(newDate.getMinutes() + 1);
 
-            // Retorna o novo objeto Date com 1 minuto a mais
             return newDate;
         }
 
@@ -853,7 +724,6 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
             var event = e.detail.event;
             var startTime = event.start;
             event.status = true
-            // debugger
             var currentTime = new Date();
             if (startTime < currentTime) {
                 event.start = currentTime;
@@ -863,7 +733,6 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
             direcionar(event)
         });
         $sked1.on('event:click.skedtape', function(e) {
-            // debugger
             $sked1.skedTape('removeEvent', e.detail.event.id);
         });
         $sked1.on('timeline:click.skedtape', function(e, api) {
@@ -886,7 +755,6 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
                             id_os: selectedId,
                             // cliente: e.detail.event.cliente_fantasia
                         },
-                        // teste: 'gustavo',
                     });
                     document.getElementById(selectedId).classList.remove('highlight-card');
                     selectedId = null;
@@ -899,10 +767,7 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
             }
         });
 
-
         // Mon Jun 26 2023 08:30:00 GMT-0300 (Horário Padrão de Brasília) exemplo data
-
-
 
         function processOrders(data, type) {
             if (type === 1) {
@@ -926,12 +791,28 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
                         'Concluido': 'concluido',
                         'Orçamento': 'orcamento'
                     };
-               
-                    processedOrder.className = statusToClassNameMap[processedOrder.os_status_nome] || 'aviso';
+
+                    processedOrder.className = statusToClassNameMap[processedOrder.os_status_nome || processedOrder.status] || 'aviso';
+
+                    if (processedOrder.nome_evento == "descanso") {
+                        processedOrder.className = "descanso"
+                    }
+                    if (processedOrder.nome_evento == "deslocamento") {
+                        processedOrder.className = "deslocamento"
+                    }
+
                     processedOrder.userData = {
                         id_os: processedOrder.os_id,
                         locations: locations2,
                         cliente: processedOrder.cliente_fantasia
+                    }
+
+                    if (processedOrder.evento == true) {
+                        processedOrder.userData = {
+                            id_os: processedOrder.id,
+                            locations: locations2,
+                            cliente: processedOrder.nome_evento
+                        }
                     }
                     if (technician) {
                         const tecnicoIndex = OsPorTecnico.findIndex(item => item.idTecnico === technician.idTecnico);
@@ -945,8 +826,8 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
                         }
                     }
 
-                    // Converta o array "OsPorTecnico" em um array com base nas posições
-                    const OsPorTecnicoArray = OsPorTecnico.map((item, index) => ({
+                    // Converter o array "OsPorTecnico" em um array com base nas posições
+                    const OsPor0TecnicoArray = OsPorTecnico.map((item, index) => ({
                         posição: index,
                         ordens: item.ordens
                     }));
@@ -955,19 +836,9 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
                 });
                 const teste = gerarHoraInicio(OsPorTecnico)
 
-
-                // Retornar apenas o item que teve os novos atributos adicionados
-                // const filteredProcessedData = processedData.filter(order => 'className' in order && 'started' in order);
-
                 return teste;
             }
         }
-
-
-
-
-
-
 
         function direcionar(event) {
             console.log('hshshshs', event)
@@ -1008,24 +879,6 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
 
             alert(`O.S Direcionada para o técnico ${event.userData.locations[event.location - 1].name}`)
             location.reload();
-        }
-
-        function calcularDistancia() {
-            const origin = 'CEP1';
-            const destination = 'CEP2';
-            const apiKey = 'YOUR_API_KEY';
-
-            const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destination}&key=${apiKey}`;
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    const distance = data.rows[0].elements[0].distance.text;
-                    const duration = data.rows[0].elements[0].duration.text;
-                    console.log(`Distância: ${distance}`);
-                    console.log(`Duração: ${duration}`);
-                });
-
         }
     </script>
 </body>
