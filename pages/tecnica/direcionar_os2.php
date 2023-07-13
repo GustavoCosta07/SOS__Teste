@@ -218,6 +218,8 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
 
         .concluido {
             background-color: #24B787;
+            border: #24B787;
+            pointer-events: none;
         }
 
         .descanso {
@@ -533,7 +535,7 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
                 ordensDoTecnico.sort((a, b) => Date.parse(a.os_hora_inicial_esperada || a.evento_inicio) - Date.parse(b.os_hora_inicial_esperada || b.evento_inicio));
 
                 for (let i = 0; i < ordensDoTecnico.length; i++) {
-                    debugger
+                    // debugger 
                     const ordem = ordensDoTecnico[i];
                     const ordemAnterior = i > 0 ? ordensDoTecnico[i - 1] : ordensDoTecnico[i];
 
@@ -557,8 +559,39 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
 
                         }
 
+                        if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 1 && ordem.os_status_nome == "Direcionado") {
+                            //isto significa que a hora atual ja passou da hora inicial esperada e que a os ainda não iniciou
+                            //sendo assim ela esta atrasada e deve ir sendo arrastada 
+                            ordem.start = getCurrentTime();
+                            ordem.end = addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
+                        }
+
+                        if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 1 && ordem.os_status_nome == "Em atendimento") {
+                            //isto significa que a hora atual ja passou da hora inicial esperada mas ja esta em atendimento
+                            //então ela começou com atraso, neste caso ela obrigatoriamente deve conter hora de inicio
+                      
+                            ordem.start = ordem.os_hora_inicio;
+                            ordem.end = getCurrentTime()
+                        }
+
+                        if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 0 && ordem.os_status_nome == "Direcionado") {
+                            //isto significa que a hora atual ja passou da hora inicial esperada mas ja esta em atendimento
+                            //então ela começou com atraso, neste caso ela obrigatoriamente deve conter hora de inicio
+                      
+                            ordem.start = ordem.os_hora_inicial_esperada
+                            ordem.end = addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
+                        }
+
+                        if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 1 && ordem.os_status_nome == "Concluido") {
+                            //isto significa que a hora atual ja passou da hora inicial esperada 
+                            //mas pode 
+                            ordem.start = ordem.os_hora_inicio
+                            ordem.end = ordem.os_hora_final
+                        }
+                    
                         if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 1 && ordem.os_started == false) {
-                            //isto só significa que a os esta atrasada e o tecnico não iniciou a ordem
+                            //isto significa que a hora atual ja passou da hora inicial esperada 
+                            //mas pode 
                             ordem.start = i > 0 ? verifyOrdemAnterior(ordem, ordemAnterior, 1) : getCurrentTime();
                             ordem.end = addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
                         }
@@ -578,6 +611,27 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
                     }
                     // as verificações vão ser quase sempre as mesma, depois da para atribuir isto a um serviço dinamico
                     if (OrdemAtualOuAnterior) {
+
+                        if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 1 && ordem.os_status_nome == "Concluido") {
+                            //isto significa que a hora atual ja passou da hora inicial esperada 
+                            //mas pode 
+                            ordem.start = ordem.os_hora_inicio
+                            ordem.end = ordem.os_hora_final
+                        }
+
+                        if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 1 && ordem.os_status_nome == "Direcionado") {
+                            //isto significa que a hora atual ja passou da hora inicial esperada 
+                            //mas pode 
+                            ordem.start = getCurrentTime()
+                            ordem.end = addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
+                        }
+
+                        if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 0 && ordem.os_status_nome == "Direcionado") {
+                            //isto significa que a hora atual ja passou da hora inicial esperada 
+                            //mas pode 
+                            ordem.start = ordem.os_hora_inicial_esperada
+                            ordem.end = addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
+                        }
 
                         if (compareCurrentTime(ordemAnterior.os_hora_inicial_esperada) == 1 && ordemAnterior.os_started == false) {
                             ordemAnterior.start = getCurrentTime()
@@ -783,7 +837,7 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
                     };
                     const technician = locations2.find(tech => tech.idTecnico === order.os_usuario);
                     processedOrder.location = technician.id;
-                    processedOrder.os_started = (processedOrder.os_status_nome === 'Em atendimento') ? true : (order.os_status_nome === 'Aberta') ? false : false;
+                    // processedOrder.os_started = (processedOrder.os_status_nome === 'Em atendimento') ? tr  ue : (order.os_status_nome === 'Aberta') ? false : false;
                     const statusToClassNameMap = {
                         'Em atendimento': 'atendimento',
                         'Direcionado': 'direcionado',
