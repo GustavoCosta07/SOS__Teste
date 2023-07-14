@@ -745,7 +745,7 @@
 			var $center = $('<div class="sked-tape__center"/>')
 				.text(event.name)
 				.appendTo($event);
-                // debugger
+                debugger
 			if (this.showEventTime || this.showEventDuration) {
 				var html = $center.html();
 				var duration = this.format.roundDuration(event.end - event.start);
@@ -754,6 +754,9 @@
 						// + ' - ' + this.format.time(new Date(event.start.getTime() + duration));
                         html += '<br>' + this.format.time(event.start)
 						+ ' - ' + this.format.time(new Date(event.start.getTime() + duration));
+
+						html += `<input type="text" value="${event}" hidden></input> `  
+
 				}
 				// if (this.showEventDuration) {
 				// 	html += '<br>' + this.format.duration(duration);

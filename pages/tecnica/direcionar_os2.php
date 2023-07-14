@@ -79,7 +79,9 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/solid.css" integrity="sha384-wnAC7ln+XN0UKdcPvJvtqIH3jOjs9pnKnq9qX68ImXvOGz2JuFoEiCjT8jyZQX2z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css" integrity="sha384-HbmWTHay9psM8qyzEKPc8odH4DsOuzdejtnr+OFtDmOcIVnhgReQ4GZBH7uwcjf6" crossorigin="anonymous">
     <link rel=" stylesheet" href="jquery.skedTape copy.css">
-    <script src="skedtape.js"></script>
+    <!-- <script src="skedtape.js"></script> -->
+    <!-- <script src="skeedtapee.js"></script> -->
+    <script src="skedtaapee.js"></script>
 
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
@@ -219,7 +221,8 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
         .concluido {
             background-color: #24B787;
             border: #24B787;
-            pointer-events: none;
+            /* pointer-events: none; */
+            
         }
 
         .descanso {
@@ -320,7 +323,6 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
 </head>
 
 <body>
-
     <div class="expanded-container">
         <div class="carousel" id="carousel"></div>
     </div>
@@ -338,8 +340,67 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
 
         </div>
     </div>
-
+    <button type="button" class="btn btn-light" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" title="" data-bs-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-bs-original-title="Top Popover">
+            Popover on top
+        </button>
     <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.concluido, .deslocamento');
+
+elements.forEach(function(element) {
+  const input = element.querySelector('input');
+  if (input) {
+    const value = input.value;
+    console.log('value', value);
+  }
+
+  const balloon = document.createElement('div');
+  balloon.style.display = 'none';
+  balloon.style.position = 'absolute';
+  balloon.style.zIndex = '9999';
+  balloon.style.width = '300px';
+  balloon.style.height = '200px';
+  balloon.style.backgroundColor = 'lightblue';
+  balloon.style.border = '2px dashed darkblue';
+  balloon.style.padding = '15px';
+  balloon.style.borderRadius = '10px';
+  element.appendChild(balloon);
+
+  const title = document.createElement('h2');
+  title.textContent = 'Balloon title';
+  title.style.color = 'darkblue';
+  title.style.textAlign = 'center';
+  balloon.appendChild(title);
+
+  const content = document.createElement('p');
+  content.textContent = 'Balloon content';
+  content.style.color = 'black';
+  content.style.fontFamily = 'Arial';
+  content.style.fontSize = '18px';
+  balloon.appendChild(content);
+
+  element.addEventListener('mouseover', () => {
+    balloon.style.display = 'block';
+  });
+
+  element.addEventListener('mouseout', () => {
+    balloon.style.display = 'none';
+  });
+
+  element.addEventListener('click', function(event) {
+    event.stopPropagation();
+  });
+});
+
+
+
+
+        });
+
+
+
+
+
         let resultadoConsulta = <?php echo $resultadoConsulta; ?>;
         let OsPorTecnico = []
         let osDirecionar = processOrders(resultadoConsulta, 1)
@@ -569,7 +630,7 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
                         if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 1 && ordem.os_status_nome == "Em atendimento") {
                             //isto significa que a hora atual ja passou da hora inicial esperada mas ja esta em atendimento
                             //então ela começou com atraso, neste caso ela obrigatoriamente deve conter hora de inicio
-                      
+
                             ordem.start = ordem.os_hora_inicio;
                             ordem.end = getCurrentTime()
                         }
@@ -577,7 +638,7 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
                         if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 0 && ordem.os_status_nome == "Direcionado") {
                             //isto significa que a hora atual ja passou da hora inicial esperada mas ja esta em atendimento
                             //então ela começou com atraso, neste caso ela obrigatoriamente deve conter hora de inicio
-                      
+
                             ordem.start = ordem.os_hora_inicial_esperada
                             ordem.end = addMinutesToTime(ordem.start, parseInt(ordem.os_previsao_hora_final))
                         }
@@ -588,7 +649,7 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
                             ordem.start = ordem.os_hora_inicio
                             ordem.end = ordem.os_hora_final
                         }
-                    
+
                         if (compareCurrentTime(ordem.os_hora_inicial_esperada) == 1 && ordem.os_started == false) {
                             //isto significa que a hora atual ja passou da hora inicial esperada 
                             //mas pode 
@@ -640,9 +701,9 @@ JOIN os_tipos ON os.os_tipo = os_tipos.os_tipo_id";
 
                         if (compareCurrentTime(ordemAnterior.os_hora_inicial_esperada) == 1 && ordemAnterior.os_started == true) {
                             ordemAnterior.start = ordemAnterior.os_hora_inicio
-                            ordemAnterior.end = verifyFinalHour(addMinutesToTime(ordemAnterior.os_hora_inicio, 
-                            parseInt(ordemAnterior.os_previsao_hora_final)), ordemAnterior) ? getCurrentTime() : 
-                            addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final));
+                            ordemAnterior.end = verifyFinalHour(addMinutesToTime(ordemAnterior.os_hora_inicio,
+                                    parseInt(ordemAnterior.os_previsao_hora_final)), ordemAnterior) ? getCurrentTime() :
+                                addMinutesToTime(ordemAnterior.os_hora_inicio, parseInt(ordemAnterior.os_previsao_hora_final));
 
                             // o end é 60 minutos se ela ainda n tiver sifo finalizada e o horario atual seja maior que 
                             // o horario de termino, se ela não tiver sido finalizada e o end esperado ja for menor que a 
